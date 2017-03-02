@@ -90,7 +90,7 @@ class DialogBase extends dialog.core.DialogExtension
 			});
 			addCallback(Dialog.ALWAYS, function():Void
 			{
-				window.update();
+				window.update(10);
 			});
 
 		}

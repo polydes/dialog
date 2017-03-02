@@ -85,7 +85,7 @@ class CharacterScripts extends dialog.core.DialogExtension
 		});
 		addCallback(Dialog.ALWAYS, function():Void
 		{
-			_nameboxWindow.update();
+			_nameboxWindow.update(10);
 		});
 		addDrawCallback("Namebox", function():Void
 		{
