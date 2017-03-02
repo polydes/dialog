@@ -75,8 +75,6 @@ class DialogBase extends dialog.core.DialogExtension
 
 			addCallback(Dialog.WHEN_CREATED, function():Void
 			{
-				dg.paused = true;
-
 				window = new DialogWindow(style.msgWindow);
 				if(style.msgBounds != null)
 					window.setContentSize(dg.msgW, dg.msgH);
@@ -85,6 +83,10 @@ class DialogBase extends dialog.core.DialogExtension
 					dg.paused = false;
 				});
 				window.applyTween(style.msgWindow.createTween);
+			});
+			addCallback(Dialog.WHEN_MESSAGE_BEGINS, function():Void
+			{
+				dg.paused = true;
 			});
 			addCallback(Dialog.ALWAYS, function():Void
 			{
@@ -165,6 +167,7 @@ class DialogBase extends dialog.core.DialogExtension
 	public function end():Void
 	{
 		dg.clearMessage();
+		dg.runCallbacks(Dialog.WHEN_MESSAGE_BOX_CLEARED);
 
 		var snd:Sound = style.endSound;
 		if(snd != null)

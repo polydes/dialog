@@ -120,6 +120,11 @@ class CharacterScripts extends dialog.core.DialogExtension
 				G2.drawImage(faceBitmap, p.x - origin.x, p.y - origin.y, false);
 			}
 		});
+		addCallback(Dialog.WHEN_MESSAGE_BOX_CLEARED, function():Void
+		{
+			face("none");
+			hidename();
+		});
 	}
 
 	public function showname(nameToDraw:String):Void
