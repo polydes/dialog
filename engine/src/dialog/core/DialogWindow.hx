@@ -116,9 +116,7 @@ class DialogWindow
 
 		#if stencyl
 
-		var newWidth = Math.max(tween.scale.get(progress).x, 1);
-		var newHeight = Math.max(tween.scale.get(progress).y, 1);
-		var newImg:BitmapData = tween.srcImg.getScaled(newWidth, newHeight);
+		var newImg:BitmapData = tween.srcImg.getScaled(tween.scale.get(progress).x, tween.scale.get(progress).y);
 		var ct:ColorTransform = new ColorTransform();
 		ct.alphaMultiplier = tween.opacity.get(progress);
 		newImg.colorTransform(newImg.rect, ct);
