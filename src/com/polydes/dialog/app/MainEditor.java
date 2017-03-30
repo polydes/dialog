@@ -15,16 +15,19 @@ import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
+import com.polydes.common.res.ResourceLoader;
+import com.polydes.common.res.Resources;
 import com.polydes.dialog.app.editors.text.TextArea;
 import com.polydes.dialog.app.pages.DialogPage;
 import com.polydes.dialog.app.pages.MacrosPage;
 import com.polydes.dialog.app.pages.PluginsPage;
-import com.polydes.dialog.res.Resources;
 
 import stencyl.sw.lnf.Theme;
 
 public class MainEditor extends JPanel
 {
+	private static Resources res = ResourceLoader.getResources("com.polydes.dialog");
+	
 	private static MainEditor _instance;
 	
 	private static final int BUTTON_WIDTH = 70;
@@ -83,9 +86,9 @@ public class MainEditor extends JPanel
 		
 		buttonGroup = new ButtonGroup();
 		
-		dialogButton = createButton("Dialog", Resources.loadIcon("main/dialog.png"));
-		macrosButton = createButton("Macros", Resources.loadIcon("main/macros.png"));
-		pluginsButton = createButton("Plugins", Resources.loadIcon("main/plugins.png"));
+		dialogButton = createButton("Dialog", res.loadIcon("main/dialog.png"));
+		macrosButton = createButton("Macros", res.loadIcon("main/macros.png"));
+		pluginsButton = createButton("Plugins", res.loadIcon("main/plugins.png"));
 		
 		buttonBar.add(dialogButton);
 		buttonBar.add(macrosButton);

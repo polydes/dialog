@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import org.apache.commons.io.FileUtils;
 
 import com.polydes.common.ext.ExtensionInterface;
+import com.polydes.common.res.ResourceLoader;
+import com.polydes.common.res.Resources;
 import com.polydes.common.util.Lang;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.structure.SDEType;
@@ -25,7 +27,6 @@ import com.polydes.dialog.data.def.elements.StructureExtension;
 import com.polydes.dialog.data.def.elements.StructureExtension.ExtensionType;
 import com.polydes.dialog.data.stores.Dialog;
 import com.polydes.dialog.data.stores.Macros;
-import com.polydes.dialog.defaults.Defaults;
 import com.polydes.dialog.updates.V5_GameExtensionUpdate;
 import com.polydes.dialog.updates.V6_ExtensionSubmodules;
 
@@ -37,6 +38,7 @@ import stencyl.sw.util.Locations;
 
 public class DialogExtension extends GameExtension
 {
+	private static Resources res = ResourceLoader.getResources("com.polydes.dialog");
 	private static DialogExtension _instance;
 	
 	ArrayList<HaxeDataType> types;
@@ -130,11 +132,11 @@ public class DialogExtension extends GameExtension
 			f = new File(getExtrasFolder(), "images" + File.separator + "Default Window.png");
 			f.getParentFile().mkdirs();
 			if(!f.exists())
-				FileHelper.writeToPNG(f.getAbsolutePath(), Defaults.loadImage("Default Window.png"));
+				FileHelper.writeToPNG(f.getAbsolutePath(), res.loadImage("defaults/Default Window.png"));
 			if(!new File(getExtrasFolder(), "dialog.txt").exists())
-				FileUtils.writeStringToFile(new File(getExtrasFolder(), "dialog.txt"), Defaults.load("dialog.txt"));
+				FileUtils.writeStringToFile(new File(getExtrasFolder(), "dialog.txt"), res.loadText("defaults/dialog.txt"));
 			if(!new File(getExtrasFolder(), "macros.txt").exists())
-				FileUtils.writeStringToFile(new File(getExtrasFolder(), "macros.txt"), Defaults.load("macros.txt"));
+				FileUtils.writeStringToFile(new File(getExtrasFolder(), "macros.txt"), res.loadText("defaults/macros.txt"));
 		}
 		catch (IOException e)
 		{

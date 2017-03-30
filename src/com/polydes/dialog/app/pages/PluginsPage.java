@@ -24,6 +24,8 @@ import com.polydes.common.nodes.NodeCreator.CreatableNodeInfo;
 import com.polydes.common.nodes.NodeCreator.NodeAction;
 import com.polydes.common.nodes.NodeSelection;
 import com.polydes.common.nodes.NodeUtils;
+import com.polydes.common.res.ResourceLoader;
+import com.polydes.common.res.Resources;
 import com.polydes.common.sw.Snippets;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.folder.Folder;
@@ -35,7 +37,6 @@ import com.polydes.dialog.DialogExtension;
 import com.polydes.dialog.app.PluginList;
 import com.polydes.dialog.app.editors.text.TextArea;
 import com.polydes.dialog.data.def.elements.StructureExtension;
-import com.polydes.dialog.res.Resources;
 
 import stencyl.core.engine.snippet.ISnippet;
 import stencyl.core.lib.Game;
@@ -46,6 +47,8 @@ import stencyl.sw.util.dg.MessageDialog;
 
 public class PluginsPage extends JPanel
 {
+	private static Resources res = ResourceLoader.getResources("com.polydes.dialog");
+	
 	private static PluginsPage _instance;
 	
 	private HierarchyModel<DefaultLeaf,DefaultBranch> dialogDefsFM;
@@ -143,7 +146,7 @@ public class PluginsPage extends JPanel
 				String newScriptTemplate = "";
 				try
 				{
-					newScriptTemplate = IOUtils.toString(Resources.getUrlStream("dialog-extension-template.hx"));
+					newScriptTemplate = IOUtils.toString(res.getUrlStream("dialog-extension-template.hx"));
 				}
 				catch(IOException e)
 				{

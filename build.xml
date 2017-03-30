@@ -54,7 +54,6 @@
 			<target name="common.compile" />
 			
 			<target name="common.copy-resources" />
-			<target name="common.copy-defaults" />
 			
 			<target name="common.makejar" />
 			
