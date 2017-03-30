@@ -4,7 +4,7 @@
 +==========================================================================
 -->
 
-<project name="stencyl" basedir="." default="dist">
+<project name="polydes/dialog" basedir="." default="dist">
 	
 	<property name="pkg" value="com/polydes/dialog" />
 	<property name="main" value="com.polydes.dialog.DialogExtension" />
