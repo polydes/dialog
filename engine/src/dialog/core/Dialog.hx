@@ -27,6 +27,7 @@ class Dialog
 {
 	#if stencyl
 	private static var _instance:Dialog = null;
+	private static var _init = false;
 	#end
 
 	public static inline var ALWAYS:Int = 0;
@@ -63,6 +64,32 @@ class Dialog
 		RESTORE_DEFAULTS
 	];
 
+	@:access(dialog.core.AnimatedImage)
+	@:access(dialog.core.DialogFont)
+	@:access(dialog.core.DialogFontInfo)
+	@:access(dialog.core.G2)
+	public static function reload()
+	{
+		_instance = null;
+		AnimatedImage.loadedAnimations = new Map<Animation, com.stencyl.models.actor.Animation>();
+		DialogFont.defaultFont = null;
+		DialogFont.loadedFonts = new Map<com.stencyl.models.Font, DialogFont>();
+		DialogFontInfo.defaultFont = null;
+		DialogFontInfo.loadedFonts = new Map<com.stencyl.models.Font, DialogFontInfo>();
+		G2.rect = new Rectangle(0, 0, 1, 1);
+		G2.rect2 = new Rectangle(0, 0, 1, 1);
+		G2.point = new Point(0, 0);
+		G2.point2 = new Point(0, 0);
+		G2.mtx = new Matrix();
+		GlobalActorID.actors = new Map<String, com.stencyl.models.Actor>();
+		dialogBoxes = null;
+		animations = null;
+		defaultStyle = null;
+		dialogCache = null;
+		macros = null;
+		specialMacros = null;
+	}
+
 	#if stencyl
 
 	public static var dialogBoxes:Array<DialogBox>;
@@ -92,7 +119,14 @@ class Dialog
 	public static function get():Dialog
 	{
 		if(_instance == null)
+		{
 			_instance = new Dialog();
+			if(!_init)
+			{
+				_init = true;
+				Universal.addReloadListener(reload);
+			}
+		}
 		return _instance;
 	}
 
