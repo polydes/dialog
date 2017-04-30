@@ -78,12 +78,12 @@ class BitmapDataUtil
 
 		//copy edges
 		var newRect:Rectangle = new Rectangle(0, 0, 0, 0);
-		var xScale = (width - inl - inr) / mW;
-		var yScale = (height - int - inb) / mH;
+		var subWidth = (width - inl - inr);
+		var subHeight = (height - int - inb);
 		//top and bottom edges
 		newRect.x = 0;
 		newRect.y = 0;
-		newRect.width = width - inl - inr;
+		newRect.width = subWidth;
 		newRect.height = int;
 		rect.x = inl;
 		rect.y = 0;
@@ -91,63 +91,65 @@ class BitmapDataUtil
 		rect.height = int;
 		p.x = inl;
 		p.y = 0;
-		bg.copyPixels(src.getScaledPartial(rect, xScale, 1), newRect, p);
+		bg.copyPixels(src.getDimScaledPartial(rect, subWidth, int), newRect, p);
 		newRect.height = inb;
 		rect.y = h - inb;
 		rect.height = inb;
 		p.y = height - inb;
-		bg.copyPixels(src.getScaledPartial(rect, xScale, 1), newRect, p);
+		bg.copyPixels(src.getDimScaledPartial(rect, subWidth, inb), newRect, p);
 		//left and right edges
 		newRect.width = inl;
-		newRect.height = height - int - inb;
+		newRect.height = subHeight;
 		rect.x = 0;
 		rect.y = int;
 		rect.width = inl;
 		rect.height = mH;
 		p.x = 0;
-		p.y = inl;
-		bg.copyPixels(src.getScaledPartial(rect, 1, yScale), newRect, p);
+		p.y = int;
+		bg.copyPixels(src.getDimScaledPartial(rect, inl, subHeight), newRect, p);
 		newRect.width = inr;
 		rect.x = w - inr;
 		rect.width = inr;
 		p.x = width - inr;
-		bg.copyPixels(src.getScaledPartial(rect, 1, yScale), newRect, p);
+		bg.copyPixels(src.getDimScaledPartial(rect, inr, subHeight), newRect, p);
 
 		//copy center
-		newRect.width = width - inl - inr;
-		newRect.height = height - int - inb;
+		newRect.width = subWidth;
+		newRect.height = subHeight;
 		rect.x = inl;
 		rect.y = int;
 		rect.width = mW;
 		rect.height = mH;
 		p.x = inl;
-		p.y = inr;
+		p.y = int;
 		
 		if(stretch)
-			bg.copyPixels(src.getScaledPartial(rect, xScale, yScale), newRect, p);
+			bg.copyPixels(src.getDimScaledPartial(rect, subWidth, subHeight), newRect, p);
 		else
-			bg.copyPixels(src.getTiledPartial(rect, xScale, yScale), newRect, p);
+			bg.copyPixels(src.getDimTiledPartial(rect, subWidth, subHeight), newRect, p);
 
 		return bg;
 	}
 
 	public static function getPartial(src:BitmapData, rect:Rectangle):BitmapData
-  {
+	{
 		var newImg:BitmapData = new BitmapData(Std.int(rect.width), Std.int(rect.height));
 		newImg.copyPixels(src, rect, zeroPoint);
 		return newImg;
 
 		//TODO: This may be buggy (swapping y pixels?)
 		//return TextureUtil.getSubTexture(src, rect);
-  }
+	}
 
-	public static function getScaled(src:BitmapData, sX:Float, sY:Float):BitmapData
-  {
+	//specifying scale by target size
+
+	public static function getDimScaled(src:BitmapData, newWidth:Int, newHeight:Int):BitmapData
+	{
+		var sX = newWidth / src.width;
+		var sY = newHeight / src.height;
+		
 		#if stencyl
 
-		var newWidth = Std.int(src.width * sX);
-		var newHeight = Std.int(src.height * sY);
-		
 		if(newWidth <= 0 || newHeight <= 0)
 		{
 			return new BitmapData(1, 1, true, 0);
@@ -165,7 +167,77 @@ class BitmapDataUtil
 		return TextureUtil.getScaled(src, sX, sY);
 
 		#end
-  }
+	}
+
+	public static function getDimTiled(src:BitmapData, newWidth:Int, newHeight:Int):BitmapData
+	{
+		var sX = newWidth / src.width;
+		var sY = newHeight / src.height;
+		
+		#if stencyl
+
+		var tilesX:Int = Math.ceil(sX);
+		var tilesY:Int = Math.ceil(sY);
+
+		var newImg:BitmapData = new BitmapData(newWidth, newHeight, true, 0);
+		var matrix:Matrix = new Matrix();
+		for(y in 0...tilesY)
+		{
+			for(x in 0...tilesX)
+			{
+				newImg.draw(src, matrix);
+				matrix.translate(src.width, 0);
+			}
+			matrix.translate(src.width * (-tilesX), src.height);
+		}
+
+		return newImg;
+
+		#elseif unity
+
+		return TextureUtil.getTiled(src, sX, sY);
+
+		#end
+
+	}
+
+	public static function getDimScaledPartial(src:BitmapData, rect:Rectangle, newWidth:Int, newHeight:Int):BitmapData
+	{
+		return src.getPartial(rect).getDimScaled(newWidth, newHeight);
+	}
+
+	public static function getDimTiledPartial(src:BitmapData, rect:Rectangle, newWidth:Int, newHeight:Int):BitmapData
+	{
+		return src.getPartial(rect).getDimTiled(newWidth, newHeight);
+	}
+
+	//specifying scale by multiple
+
+	public static function getScaled(src:BitmapData, sX:Float, sY:Float):BitmapData
+	{
+		#if stencyl
+
+		var newWidth = Std.int(src.width * sX);
+		var newHeight = Std.int(src.height * sY);
+
+		if(newWidth <= 0 || newHeight <= 0)
+		{
+			return new BitmapData(1, 1, true, 0);
+		}
+
+		var newImg:BitmapData = new BitmapData(newWidth, newHeight, true, 0);
+
+		var matrix:Matrix = new Matrix();
+		matrix.scale(sX, sY);
+		newImg.draw(src, matrix);
+		return newImg;
+
+		#elseif unity
+
+		return TextureUtil.getScaled(src, sX, sY);
+
+		#end
+	}
 
 	public static function getTiled(src:BitmapData, sX:Float, sY:Float):BitmapData
 	{
@@ -285,17 +357,17 @@ class BitmapDataUtil
 	}
 
 	public static function fillColor(tex:Texture2D, color:Color):Void
-  {
-    var fillColorArray = tex.GetPixels();
+	{
+		var fillColorArray = tex.GetPixels();
 
-    for(i in 0...fillColorArray.Length)
-    {
-      fillColorArray[i] = color;
-    }
+		for(i in 0...fillColorArray.Length)
+		{
+			fillColorArray[i] = color;
+		}
 
-    tex.SetPixels(fillColorArray);
-    tex.Apply();
-  }
+		tex.SetPixels(fillColorArray);
+		tex.Apply();
+	}
 
 	public static function colorTransform(tex:Texture2D, rect:Rectangle, ct:ColorTransform)
 	{
