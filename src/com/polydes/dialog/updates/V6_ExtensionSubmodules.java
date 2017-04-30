@@ -296,7 +296,8 @@ public class V6_ExtensionSubmodules implements Worker
 	{
 		String[] parts = s.replaceAll("\\[|\\]| ", "").split(",");
 		String newValue = String.format(format, parts[1], parts[2], parts[3], parts[0]);
-		newValue.replaceAll("--", "").replaceAll("-0","0");
+		newValue = StringUtils.replace(newValue, "--", "");
+		newValue = StringUtils.replace(newValue, "-0", "0");
 		return newValue;
 	}
 	
