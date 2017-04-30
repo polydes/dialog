@@ -89,7 +89,7 @@ class DialogFontInfo
 		else
 		{
 			var id:Int = font.ID;
-			textBytes = Data.get().resourceAssets.get(id + ".fnt");
+			textBytes = Assets.getText('assets/graphics/${Engine.IMG_BASE}/font-$id.fnt');
 			src = Data.get().getGraphicAsset(id + ".png", "assets/graphics/" + Engine.IMG_BASE + "/font-" + id + ".png");
 			preScaled = true;
 		}

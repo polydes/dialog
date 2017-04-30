@@ -12,6 +12,8 @@ import com.stencyl.Engine;
 
 import com.polydes.datastruct.DataStructures;
 
+import openfl.geom.*;
+
 #elseif unity
 
 import unityengine.*;
