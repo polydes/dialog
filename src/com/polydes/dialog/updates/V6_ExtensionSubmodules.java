@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Function;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,6 +52,13 @@ public class V6_ExtensionSubmodules implements Worker
 		
 		modifiedStructures = new ArrayList<>();
 		
+		Function<String, String> convertAnim = s -> convertAnimation(s);
+		Function<String, String> convertImage = s -> convertExtrasImage(s);
+		Function<String, String> convertPointToInsets = s -> convertPointToInsets(s);
+		Function<String, String> convertRatioInt = s -> convertRatioInt(s);
+		Function<String, String> convertRatioPoint = s -> convertRatioPoint(s);
+		Function<String, String> convertStrArrToSndArr = s -> stringArrayToSoundArray(s);
+		
 		Structure log = make("dialog.ds.ext.Logic", "Dialog/Plugins/Logic");
 		Structure ms = make("dialog.ds.ext.MessagingScripts", "Dialog/Plugins/Messaging Scripts");
 		Structure ss = make("dialog.ds.ext.SoundScripts", "Dialog/Plugins/Sound Scripts");
@@ -67,8 +75,6 @@ public class V6_ExtensionSubmodules implements Worker
 			Structure te = make("dialog.ds.ext.TextEffects", prefix + "Text Effects");
 			Structure dop = make("dialog.ds.ext.DialogOptions", prefix + "Dialog Options");
 			
-			Map<String,String> map = style;
-			
 			//Dialog Base
 			for (String prop : new String[] {
 				"msgWindow", "msgBounds", "msgFont",
@@ -76,25 +82,25 @@ public class V6_ExtensionSubmodules implements Worker
 				"controlAttribute", "lineSpacing",
 				"charSpacing", "clearSound", "closeSound",
 				"endSound" })
-				set(db, prop, map.remove(prop));
-			map.remove("fitMsgToWindow"); //unused
+				move(style, db, prop);
+			style.remove("fitMsgToWindow"); //unused
 			
 			//Typing Scripts
-			set(ts, "defaultRandomTypeSounds", stringArrayToSoundArray(map.remove("defaultRandomTypeSounds")));
-			set(ts, "characterSkipSFX", map.remove("characterSkipSFX"));
-			set(ts, "playTypeSoundOnSpaces", map.remove("playTypeSoundOnSpaces"));
+			moveConvert(style, ts, "defaultRandomTypeSounds", convertStrArrToSndArr);
+			move(style, ts, "characterSkipSFX");
+			move(style, ts, "playTypeSoundOnSpaces");
 			
 			//Extra Glyphs
-			set(eg, "glyphPadding", map.remove("glyphPadding"));
+			move(style, eg, "glyphPadding");
 			
 			//Character Scripts
 			for (String prop : new String[] { "nameboxWindow",
 				"nameboxFont", "faceImagePrefix",
 				"faceRelation" })
-				set(cs, prop, map.remove(prop));
-			set(cs, "faceOrigin", convertRatioPoint(map.remove("faceOrigin")));
-			set(cs, "facePos", convertRatioPoint(map.remove("facePos")));
-			set(cs, "faceMsgOffset", convertRectangleToInsets(map.remove("faceMsgOffset"), "[%s,-%s,-%s,%s]"));
+				move(style, cs, prop);
+			moveConvert(style, cs, "faceOrigin", convertRatioPoint);
+			moveConvert(style, cs, "facePos", convertRatioPoint);
+			moveConvert(style, cs, "faceMsgOffset", s -> convertRectangleToInsets(s, "[%s,-%s,-%s,%s]"));
 			
 			//Skip Scripts
 			for (String prop : new String[] { "fastSpeed",
@@ -102,17 +108,17 @@ public class V6_ExtensionSubmodules implements Worker
 				"zoomButton", "zoomSoundInterval",
 				"instantButton", "instantSound",
 				"skippableDefault" })
-				set(sks, prop, map.remove(prop));
-			set(sks, "fastSound", stringArrayToSoundArray(map.remove("fastSound")));
-			set(sks, "zoomSound", stringArrayToSoundArray(map.remove("zoomSound")));
+				move(style, sks, prop);
+			moveConvert(style, sks, "fastSound", convertStrArrToSndArr);
+			moveConvert(style, sks, "zoomSound", convertStrArrToSndArr);
 			
 			//Flow Scripts
 			for (String prop : new String[] { "advanceDialogButton",
 				"waitingSound", "waitingSoundInterval",
 				"inputSound", "noInputSoundWithTags" })
-				set(fs, prop, map.remove(prop));
-			set(fs, "animForPointer", convertAnimation(map.remove("animForPointer")));
-			set(fs, "pointerPos", convertRatioPoint(map.remove("pointerPos")));
+				move(style, fs, prop);
+			moveConvert(style, fs, "animForPointer", convertAnim);
+			moveConvert(style, fs, "pointerPos", convertRatioPoint);
 			
 			//Text Effects
 			for (String prop : new String[] { "v_maxShakeOffsetX",
@@ -120,7 +126,7 @@ public class V6_ExtensionSubmodules implements Worker
 				"s_magnitude", "s_frequency", "s_pattern",
 				"r_diameter", "r_frequency", "r_pattern",
 				"g_start", "g_stop", "g_duration" })
-				set(te, prop, map.remove(prop));
+				move(style, te, prop);
 			
 			//Dialog Options
 			for(Entry<Object, Object> entry : Lang.hashmap(
@@ -139,7 +145,7 @@ public class V6_ExtensionSubmodules implements Worker
 				"optConfirmSound", "confirmSound",
 				"optItemPadding", "itemPadding",
 				"optInactiveTime", "inactiveTime").entrySet())
-				set(dop, (String) entry.getValue(), map.remove((String) entry.getKey()));
+				set(dop, (String) entry.getValue(), style.remove((String) entry.getKey()));
 			
 			String extensionList =
 				StringUtils.join(
@@ -152,40 +158,37 @@ public class V6_ExtensionSubmodules implements Worker
 					","
 				);
 			extensionList = "[" + extensionList + "]:dialog.ds.DialogExtension";
-			map.put("extensions", extensionList);
+			style.put("extensions", extensionList);
 		}
 		
 		for(Structure scalingImage : loopDef("dialog.ds.ScalingImageTemplate"))
 		{
-			Map<String,String> map = scalingImage;
-			map.put("image", convertExtrasImage(map.get("image")));
-			map.put("origin", convertRatioPoint(map.get("origin")));
-			map.put("border", convertPointToInsets(map.remove("border")));
+			convert(scalingImage, "image", convertImage);
+			convert(scalingImage, "origin", convertRatioPoint);
+			convert(scalingImage, "border", convertPointToInsets);
 			
 			System.out.println("Scaling Image");
-			System.out.println(map);
+			System.out.println(scalingImage);
 		}
 		
 		for(Structure tween : loopDef("dialog.ds.TweenTemplate"))
 		{
-			Map<String,String> map = tween;
-			map.put("positionStart", convertRatioPoint(map.get("positionStart")));
-			map.put("positionStop", convertRatioPoint(map.get("positionStop")));
+			convert(tween, "positionStart", convertRatioPoint);
+			convert(tween, "positionStop", convertRatioPoint);
 			
 			System.out.println("Tween");
-			System.out.println(map);
+			System.out.println(tween);
 		}
 		
 		for(Structure window : loopDef("dialog.ds.WindowTemplate"))
 		{
-			Map<String,String> map = window;
-			map.put("position", convertRatioPoint(map.get("position")));
-			map.put("scaleWidthSize", convertRatioInt(map.get("scaleWidthSize")));
-			map.put("scaleHeightSize", convertRatioInt(map.get("scaleHeightSize")));
-			map.put("insets", convertRectangleToInsets(map.remove("insets"), "[%s,%s,%s,%s]"));
+			convert(window, "position", convertRatioPoint);
+			convert(window, "scaleWidthSize", convertRatioInt);
+			convert(window, "scaleHeightSize", convertRatioInt);
+			convert(window, "insets", s -> convertRectangleToInsets(s, "[%s,%s,%s,%s]"));
 			
 			System.out.println("Window");
-			System.out.println(map);
+			System.out.println(window);
 		}
 		
 		for(Structure s : modifiedStructures)
@@ -223,11 +226,37 @@ public class V6_ExtensionSubmodules implements Worker
 	private void set(Structure s, String field, String value)
 	{
 		System.out.println(s.get("[NAME]") + ":" + field + "=" + value);
-		s.put(field, value);
-		
-//		StructureField f = s.getTemplate().getField(field);
-//		s.setPropertyFromString(f, value);
-//		s.setPropertyEnabled(f, !f.isOptional() || s.getProperty(f) != null);
+		if(value != null && !value.isEmpty())
+			s.put(field, value);
+	}
+	
+	private void convert(Structure s, String field, Function<String, String> converter)
+	{
+		moveConvert(s, s, field, converter);
+	}
+	
+	private void moveConvert(Structure s1, Structure s2, String field, Function<String, String> converter)
+	{
+		if(s1.containsKey(field))
+		{
+			String original = s1.remove(field);
+			if(original != null)
+			{
+				set(s2, field, converter.apply(original));
+			}
+		}
+	}
+	
+	private void move(Structure s1, Structure s2, String field)
+	{
+		if(s1.containsKey(field))
+		{
+			String original = s1.remove(field);
+			if(original != null)
+			{
+				set(s2, field, original);
+			}
+		}
 	}
 	
 	private Structure make(String def, String path)
@@ -245,22 +274,22 @@ public class V6_ExtensionSubmodules implements Worker
 	
 	private String convertAnimation(String s)
 	{
-		return s == null ? null : "[" + s.replace("-", ",") + "]";
+		return "[" + s.replace("-", ",") + "]";
 	}
 	
 	private String convertExtrasImage(String s)
 	{
-		return s == null ? null : s + ".png";
+		return s + ".png";
 	}
 	
 	private String convertRatioInt(String s)
 	{
-		return s == null ? null : "[" + s + "]";
+		return "[" + s + "]";
 	}
 	
 	private String convertRatioPoint(String s)
 	{
-		return s == null ? null : s.replaceAll("([^,]+)", "\\[$0\\]");
+		return s.replaceAll("([^,]+)", "\\[$0\\]");
 	}
 	
 	private String convertRectangleToInsets(String s, String format)
@@ -273,22 +302,18 @@ public class V6_ExtensionSubmodules implements Worker
 	
 	private String convertPointToInsets(String s)
 	{
-		if(s == null)
-			return "[0,0,0,0]";
 		String[] parts = s.replaceAll("\\[|\\]| ", "").split(",");
-		String newValue = String.format("[%s,%s,%s,%s", parts[1], parts[0], parts[1], parts[0]);
+		String newValue = String.format("[%s,%s,%s,%s]", parts[1], parts[0], parts[1], parts[0]);
 		return newValue;
 	}
 	
 	private String simplifyArray(String s)
 	{
-		return s == null ? null : s.replaceAll(":[^,\\]]+", "").replaceAll("\\[|\\]", "");
+		return s.replaceAll(":[^,\\]]+", "").replaceAll("\\[|\\]", "");
 	}
 	
 	private String stringArrayToSoundArray(String s)
 	{
-		if(s == null)
-			return null;
 		s = simplifyArray(s);
 		String[] ids = s.split(",");
 		for(int i = 0; i < ids.length; ++i)
