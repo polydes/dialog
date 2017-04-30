@@ -27,14 +27,17 @@ import com.polydes.dialog.data.def.elements.StructureExtension;
 import com.polydes.dialog.data.def.elements.StructureExtension.ExtensionType;
 import com.polydes.dialog.data.stores.Dialog;
 import com.polydes.dialog.data.stores.Macros;
+import com.polydes.dialog.updates.DS_V4_FullTypeNamesUpdate;
 import com.polydes.dialog.updates.V5_GameExtensionUpdate;
 import com.polydes.dialog.updates.V6_ExtensionSubmodules;
 
 import stencyl.core.lib.Game;
+import stencyl.sw.SW;
 import stencyl.sw.ext.GameExtension;
 import stencyl.sw.ext.OptionsPanel;
 import stencyl.sw.util.FileHelper;
 import stencyl.sw.util.Locations;
+import stencyl.sw.util.WorkerPriorityQueue;
 
 public class DialogExtension extends GameExtension
 {
@@ -98,7 +101,7 @@ public class DialogExtension extends GameExtension
 	public void onInstalledForGame()
 	{
 		if(detectOldInstall())
-			updateFromVersion(4);
+			updateFromVersion(4, SW.get().getExtensionManager().getExtensionFormatUpdates());
 		else
 			loadDefaults();
 	}
@@ -116,12 +119,20 @@ public class DialogExtension extends GameExtension
 	}
 	
 	@Override
-	public void updateFromVersion(int fromVersion)
+	public void updateFromVersion(int fromVersion, WorkerPriorityQueue updateQueue)
 	{
 		if(fromVersion < 5)
-			new V5_GameExtensionUpdate().run();
+			updateQueue.add(new V5_GameExtensionUpdate());
 		if(fromVersion < 6)
-			new V6_ExtensionSubmodules().run();
+		{
+			updateQueue
+				.before(com.polydes.datastruct.updates.V4_FullTypeNamesUpdate.class)
+				.add(new DS_V4_FullTypeNamesUpdate());
+			updateQueue
+				.after(V5_GameExtensionUpdate.class)
+				.after(com.polydes.datastruct.updates.V4_FullTypeNamesUpdate.class)
+				.add(new V6_ExtensionSubmodules());
+		}
 	}
 	
 	private void loadDefaults()
