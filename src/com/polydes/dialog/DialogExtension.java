@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.io.FileUtils;
 
+import com.polydes.common.data.types.Types;
 import com.polydes.common.ext.ExtensionInterface;
 import com.polydes.common.res.ResourceLoader;
 import com.polydes.common.res.Resources;
@@ -216,6 +217,9 @@ public class DialogExtension extends GameExtension
 	@Override
 	public void onGameWithDataClosed()
 	{
+		for(HaxeDataType type : types)
+			Types.get().unregisterItem(type.dataType);
+		
 		SDETypes.fromClass(StructureTab.class).childTypes.remove(StructureExtension.class);
 		
 		Dialog.get().unload();
