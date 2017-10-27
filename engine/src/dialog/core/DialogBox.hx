@@ -629,7 +629,7 @@ class DialogBox #if unity extends MonoBehaviour #end
 
 	public function goToDialog(toCall:String)
 	{
-		dialogSource = Dialog.dialogCache.get(toCall);
+		dialogSource = Dialog.getDg(toCall);
 
 		continueNewDialog();
 	}

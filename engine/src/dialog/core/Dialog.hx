@@ -101,7 +101,7 @@ class Dialog
 
 	#end
 
-	public static var dialogCache:Map<String, String> = null;
+	public static var dialogCache:Map<String, DialogChunk> = null;
 
 	public static var macros:Map<String, String> = null;
 	public static var specialMacros:Map<String, Array<String>> = null;
@@ -240,7 +240,7 @@ class Dialog
 	{
 		if(dialogCache != null) return;
 
-		dialogCache = new Map<String, String>();
+		dialogCache = new Map<String, DialogChunk>();
 
 		#if stencyl
 		var dgLines:Array<String> = Util.getFileLines("dialog.txt");
@@ -293,11 +293,6 @@ class Dialog
 			}
 		}
 
-		for(i in 0...dgLines.length)
-		{
-			dgLines[i] = replaceSpecialMacros(replaceMacros(dgLines[i]));
-		}
-
 		for(curLine in dgLines)
 		{
 			if(curLine.length == 0) continue;
@@ -305,7 +300,7 @@ class Dialog
 			if(curLine.charAt(0) == "#")
 			{
 				if(curAddress != null)
-					dialogCache.set(curAddress, curDgString);
+					dialogCache.set(curAddress, new DialogChunk(curDgString));
 
 				curAddress = curLine.substr(1);
 				curDgString = "";
@@ -318,7 +313,7 @@ class Dialog
 
 		//one final time, to get the currently stored dialog.
 		if(curAddress != null && curDgString.length > 0)
-			dialogCache.set(curAddress, curDgString);
+			dialogCache.set(curAddress, new DialogChunk(curDgString));
 	}
 
 	private static inline var leftDelimiter:String = "{";
@@ -651,6 +646,23 @@ class Dialog
 
 	public static function getDg(address:String):String
 	{
-		return Dialog.dialogCache.get(address);
+		var chunk = Dialog.dialogCache.get(address);
+		if(!chunk.processed)
+		{
+			chunk.text = _instance.replaceSpecialMacros(_instance.replaceMacros(chunk.text));
+			chunk.processed = true;
+		}
+		return chunk.text;
+	}
+}
+
+class DialogChunk
+{
+	public var text:String;
+	public var processed:Bool;
+
+	public function new(text:String)
+	{
+		this.text = text;
 	}
 }
