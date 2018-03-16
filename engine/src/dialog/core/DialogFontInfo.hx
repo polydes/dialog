@@ -90,7 +90,7 @@ class DialogFontInfo
 		{
 			var id:Int = font.ID;
 			textBytes = Assets.getText('assets/graphics/${Engine.IMG_BASE}/font-$id.fnt');
-			src = Data.get().getGraphicAsset(id + ".png", "assets/graphics/" + Engine.IMG_BASE + "/font-" + id + ".png");
+			src = Assets.getBitmapData('assets/graphics/${Engine.IMG_BASE}/font-$id.png');
 			preScaled = true;
 		}
 

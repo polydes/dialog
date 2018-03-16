@@ -309,7 +309,7 @@ class BitmapDataUtil
 
 	#if stencyl
 
-	public static function getImageFromAnimation(type:ActorType, animName:String):BitmapData
+	public static function getImagesFromAnimation(type:ActorType, animName:String):Array<BitmapData>
 	{
 		var sprite:Sprite = cast(Data.get().resources.get(type.spriteID), Sprite);
 		var a:Animation = null;
@@ -322,10 +322,10 @@ class BitmapDataUtil
 			}
 		}
 		if(a == null) return null;
-		if(a.imgData == null)
+		if(!a.graphicsLoaded)
 			a.loadGraphics();
-
-		return a.imgData;
+		
+		return a.frames;
 	}
 
 	public static function getActorTypeAnimation(type:ActorType, animName:String):Animation

@@ -29,7 +29,7 @@ class AnimatedImage
 	public var numFrames:Int;
 	public var framesAcross:Int;
 	public var durations:Array<Int>;
-	public var sheet:BitmapData;
+	public var frames:Array<BitmapData>;
 
 	public var done:Bool;
 
@@ -52,9 +52,9 @@ class AnimatedImage
 		numFrames = anim.frameCount;
 		framesAcross = anim.framesAcross;
 		durations = anim.durations;
-		sheet = anim.imgData;
+		frames = anim.frames;
 
-		curFrameImg = copyFrame(0);
+		curFrameImg = frames[0];
 	}
 
 	public function start():Void
@@ -93,7 +93,7 @@ class AnimatedImage
 					curFrame = 0;
 			}
 
-			curFrameImg = copyFrame(curFrame);
+			curFrameImg = frames[curFrame];
 		}
 	}
 
@@ -101,9 +101,7 @@ class AnimatedImage
 
 	public function copyFrame(frame:Int):BitmapData
 	{
-		var img:BitmapData = new BitmapData(width, height, true, 0);
-		img.copyPixels(sheet, new Rectangle(Std.int(width * (frame % framesAcross)), Std.int(height * Std.int(frame / framesAcross)), width, height), zeroPoint, null, null, true);
-		return img;
+		return frames[frame].clone();
 	}
 }
 #end
