@@ -16,7 +16,7 @@
 	<property name="description" value="Toolset side of the Dialog Extension." />
 	<property name="author" value="Justin &amp; Irock" />
 	<property name="internalVersion" value="6" />
-	<property name="version" value="2.0.0" />
+	<property name="version" value="2.0.1" />
 	
 	<property name="dsjarname" value="com.polydes.datastruct.jar" />
 	
