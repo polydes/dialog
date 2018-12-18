@@ -25,6 +25,10 @@ public class MacrosPage extends SourcePage<TextSource>
 
 	public static void disposeInstance()
 	{
-		_instance = null;
+		if(_instance != null)
+		{
+			_instance.dispose();
+			_instance = null;
+		}
 	}
 }

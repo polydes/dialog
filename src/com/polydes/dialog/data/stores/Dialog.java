@@ -94,4 +94,12 @@ public class Dialog extends TextStore
 			f.add(newSection);
 		}
 	}
+	
+	public void dispose()
+	{
+		unload();
+		folderModel.dispose();
+		folderModel = null;
+		_instance = null;
+	}
 }

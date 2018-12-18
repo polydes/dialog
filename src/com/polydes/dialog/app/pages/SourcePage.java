@@ -83,4 +83,10 @@ public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements
 	{
 		return true;
 	}
+	
+	public void dispose()
+	{
+		treePage.dispose();
+		treePage = null;
+	}
 }

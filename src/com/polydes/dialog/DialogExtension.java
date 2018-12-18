@@ -222,10 +222,10 @@ public class DialogExtension extends GameExtension
 		
 		SDETypes.fromClass(StructureTab.class).childTypes.remove(StructureExtension.class);
 		
-		Dialog.get().unload();
-		Macros.get().unload();
-
 		MainEditor.disposePages();
+		
+		Dialog.get().dispose();
+		Macros.get().dispose();
 		
 		types = null;
 	}

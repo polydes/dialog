@@ -79,4 +79,12 @@ public class Macros extends TextStore
 		
 		setDirty(false);
 	}
+	
+	public void dispose()
+	{
+		unload();
+		folderModel.dispose();
+		folderModel = null;
+		_instance = null;
+	}
 }
