@@ -88,8 +88,9 @@ class FlowScripts extends dialog.core.DialogExtension
 			skipScripts = cast(dg.getExt("Skip Scripts"), SkipScripts);
 			#if stencyl
 			noInputSoundWithTags = [];
-			for(tagname in (style.noInputSoundWithTags: Array<String>))
-				noInputSoundWithTags.push("" + tagname);
+			if(style.noInputSoundWithTags != null)
+				for(tagname in (style.noInputSoundWithTags: Array<String>))
+					noInputSoundWithTags.push("" + tagname);
 			#end
 		});
 		addCallback(Dialog.ALWAYS, function():Void
