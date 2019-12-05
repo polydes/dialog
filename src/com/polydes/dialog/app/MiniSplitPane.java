@@ -30,7 +30,6 @@ import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-@SuppressWarnings("serial")
 public class MiniSplitPane extends JSplitPane
 {
 	private int dividerDragSize = 7;
