@@ -10,13 +10,13 @@
 	<property name="main" value="com.polydes.dialog.DialogExtension" />
 	<property name="type" value="game" />
 	
-	<property name="dependsOn" value="stencylbuild-10157,toolset-com.polydes.datastruct-2.0.0,engine-com.polydes.dialog-2.0.0" />
+	<property name="dependsOn" value="stencylbuild-10450,toolset-com.polydes.datastruct-2.0.0,engine-com.polydes.dialog-2.0.4" />
 	
 	<property name="name" value="Dialog Extension" />
 	<property name="description" value="Toolset side of the Dialog Extension." />
 	<property name="author" value="Justin &amp; Irock" />
 	<property name="internalVersion" value="6" />
-	<property name="version" value="2.0.2" />
+	<property name="version" value="2.0.4" />
 	
 	<property name="dsjarname" value="com.polydes.datastruct.jar" />
 	
@@ -38,7 +38,7 @@
 		
 		<zip destfile="release/Dialog Extension Sample.stencyl" basedir="samples/Dialog Extension Sample" />
 		
-		<echo message="[InternetShortcut]\nURL=http://dialog.justin.espedaladventures.com/guides/index.php?f=getting_started" file="release/Installation and Getting Started Guide.url" />
+		<echo message="[InternetShortcut]\nURL=http://dialogextension.com/guides/index.php?f=getting_started" file="release/Installation and Getting Started Guide.url" />
 		
 		<zip destfile="release/Dialog Extension.zip" basedir="release" />
 		
