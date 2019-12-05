@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,18 +14,85 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.CharUtils;
 
 public class Text
 {
 	private static HashMap<File, FileOutputStream> outstreams = new HashMap<File, FileOutputStream>();
 	private static HashMap<File, OutputStreamWriter> writers = new HashMap<File, OutputStreamWriter>();
 	
+	private static String convertFromPseudoUnicode(String text)
+	{
+		int index = 0, lastIndex = 0;
+		StringBuilder sb = null;
+		
+		while((index = text.indexOf("~x", lastIndex)) != -1)
+		{
+			if(sb == null) sb = new StringBuilder(text.length());
+			sb.append(text.substring(lastIndex, index));
+			try
+			{
+				int codepoint = Integer.parseInt(text.substring(index + 2, index + 6), 16);
+				sb.appendCodePoint(codepoint);
+				lastIndex = index + 6;
+			}
+			catch(NumberFormatException ex)
+			{
+				sb.append(text.substring(index, index + 2));
+				lastIndex += 2;
+			}
+		}
+		if(sb != null)
+		{
+			if(lastIndex < text.length())
+				sb.append(text.substring(lastIndex, text.length()));
+			return sb.toString();
+		}
+		
+		return text;
+	}
+	
+	private static String convertToPseudoUnicode(String text)
+	{
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		while(index < text.length())
+		{
+			char ch = text.charAt(index);
+			if(CharUtils.isAscii(ch))
+			{
+				sb.append(ch);
+				index += 1;
+			}
+			else
+			{
+				sb.append("~x").append(hex(text.codePointAt(index), 4));
+				index += 1;
+				//TODO: doesn't handle surrogate chars
+			}
+		}
+		
+		return sb.toString();
+	}
+	
+	public static String hex(int i, int places)
+	{
+		String s = Integer.toHexString(i);
+		while(s.length() < places)
+			s = "0" + s;
+		return s;
+	}
+	
 	public static List<String> readLines(File file)
 	{
 		try
 		{
-			return FileUtils.readLines(file);
+			List<String> lines = FileUtils.readLines(file, StandardCharsets.UTF_8);
+			for(int i = 0; i < lines.size(); ++i)
+			{
+				lines.set(i, convertFromPseudoUnicode(lines.get(i)));
+			}
+			return lines;
 		}
 		catch (IOException e)
 		{
@@ -148,7 +214,12 @@ public class Text
 	{
 		try
 		{
-			FileUtils.writeLines(file, lines, "\n");
+			List<String> outLines = new ArrayList<>(lines);
+			for(int i = 0; i < lines.size(); ++i)
+			{
+				outLines.set(i, convertToPseudoUnicode(outLines.get(i)));
+			}
+			FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), outLines, "\n");
 		}
 		catch (IOException e)
 		{
@@ -168,14 +239,14 @@ public class Text
 			e.printStackTrace();
 		}
 		outstreams.put(file, os);
-		writers.put(file, new OutputStreamWriter(os, Charset.forName("UTF-8")));
+		writers.put(file, new OutputStreamWriter(os, StandardCharsets.UTF_8));
 	}
 	
 	public static void writeLine(File file, String s)
 	{
 		try
 		{
-			writers.get(file).write(s + "\n");
+			writers.get(file).write(convertToPseudoUnicode(s) + "\n");
 		}
 		catch (IOException e)
 		{
@@ -195,18 +266,5 @@ public class Text
 		}
 		writers.remove(file);
 		outstreams.remove(file);
-	}
-
-	public static List<String> readLines(InputStream urlStream)
-	{
-		try
-		{
-			return IOUtils.readLines(urlStream);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-			return new ArrayList<String>();
-		}
 	}
 }

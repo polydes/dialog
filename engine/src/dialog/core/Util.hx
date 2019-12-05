@@ -134,6 +134,8 @@ class Util
 		o = Assets.getText("assets/data/com.polydes.dialog/"+ name);
 		if(o == null)
 			trace("Failed to load Resource: " + name);
+		else
+			o = convertFromPseudoUnicode(o);
 
 		#elseif unity
 
@@ -146,6 +148,30 @@ class Util
 		#end
 
 		return o;
+	}
+	
+	public static function convertFromPseudoUnicode(text:String):String
+	{
+		var index = 0;
+		var lastIndex = 0;
+		var sb:StringBuf = null;
+		
+		while((index = text.indexOf("~x", lastIndex)) != -1)
+		{
+			if(sb == null) sb = new StringBuf();
+			sb.addSub(text, lastIndex, (index - lastIndex));
+			var codepoint = Std.parseInt("0x"+text.substring(index + 2, index + 6));
+			sb.addChar(codepoint);
+			lastIndex = index + 6;
+		}
+		if(sb != null)
+		{
+			if(lastIndex < text.length)
+				sb.addSub(text, lastIndex, (text.length - lastIndex));
+			return sb.toString();
+		}
+		
+		return text;
 	}
 
 	public static function getTitleIndices(s_split:Array<String>, titleMarker:String):Array<Int>
