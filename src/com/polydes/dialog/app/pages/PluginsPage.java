@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.polydes.common.comp.HorizontalDivider;
 import com.polydes.common.comp.TitledPanel;
@@ -47,6 +48,8 @@ import stencyl.sw.util.dg.MessageDialog;
 
 public class PluginsPage extends JPanel
 {
+	private static final Logger log = Logger.getLogger(PluginsPage.class);
+	
 	private static Resources res = ResourceLoader.getResources("com.polydes.dialog");
 	
 	private static PluginsPage _instance;
@@ -150,7 +153,7 @@ public class PluginsPage extends JPanel
 				}
 				catch(IOException e)
 				{
-					e.printStackTrace();
+					log.error(e.getMessage(), e);
 				}
 				
 				String newScriptName = toCreate.getName();

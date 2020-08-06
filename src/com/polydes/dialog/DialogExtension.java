@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import com.polydes.common.data.types.Types;
 import com.polydes.common.ext.ExtensionInterface;
@@ -42,6 +45,8 @@ import stencyl.sw.util.WorkerPriorityQueue;
 
 public class DialogExtension extends GameExtension
 {
+	private static final Logger log = Logger.getLogger(DialogExtension.class);
+	
 	private static Resources res = ResourceLoader.getResources("com.polydes.dialog");
 	private static DialogExtension _instance;
 	
@@ -62,6 +67,8 @@ public class DialogExtension extends GameExtension
 	public void onStartup()
 	{
 		super.onStartup();
+		
+		LogManager.getLogger("com.polydes.dialog").setLevel(Level.DEBUG);
 		
 		_instance = this;
 		
@@ -152,7 +159,7 @@ public class DialogExtension extends GameExtension
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 	

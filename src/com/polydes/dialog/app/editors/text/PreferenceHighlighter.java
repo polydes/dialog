@@ -9,10 +9,12 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-
+import org.apache.log4j.Logger;
 
 public class PreferenceHighlighter implements Highlighter
 {
+	private static final Logger log = Logger.getLogger(PreferenceHighlighter.class);
+	
 	public static final Color TEXT_COLOR_COMMENT = new Color(0x5da54c);
 	public static final Color TEXT_COLOR_KEY = new Color(0x95BED8);
 	public static final Color TEXT_COLOR_VALUE = new Color(0x7D8C93);
@@ -55,7 +57,7 @@ public class PreferenceHighlighter implements Highlighter
 		}
 		catch (BadLocationException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		
 		if (matcher != null)
@@ -73,7 +75,7 @@ public class PreferenceHighlighter implements Highlighter
 		}
 		catch (BadLocationException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		
 		if (matcher != null)

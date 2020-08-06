@@ -15,8 +15,12 @@ import java.awt.image.ColorModel;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 public class ImageTransfer
 {
+	private static final Logger log = Logger.getLogger(ImageTransfer.class);
+	
 	public static void copy(Image image)
 	{
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -38,11 +42,11 @@ public class ImageTransfer
 			}
 			catch (UnsupportedFlavorException e)
 			{
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 			catch (IOException e)
 			{
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 		

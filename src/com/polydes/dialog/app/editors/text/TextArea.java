@@ -25,12 +25,16 @@ import javax.swing.text.StyledDocument;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
+import org.apache.log4j.Logger;
+
 import com.polydes.common.comp.TitledPanel;
 import com.polydes.common.nodes.Leaf;
 import com.polydes.dialog.data.TextSource;
 
 public class TextArea extends TitledPanel implements PropertyChangeListener
 {
+	private static final Logger log = Logger.getLogger(TextArea.class);
+	
 	public static final Color TEXT_EDITOR_COLOR = new Color(43, 43, 43);
 	public static final Color TEXT_COLOR_BASE = Color.WHITE;
 	
@@ -133,7 +137,7 @@ public class TextArea extends TitledPanel implements PropertyChangeListener
 			}
 			catch (BadLocationException e)
 			{
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			}
 		}
 
@@ -193,7 +197,7 @@ public class TextArea extends TitledPanel implements PropertyChangeListener
 		}
 		catch (BadLocationException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		doc.setCharacterAttributes(offset, length, plain, true);
 		if (matcher != null)
@@ -230,7 +234,7 @@ public class TextArea extends TitledPanel implements PropertyChangeListener
 		}
 		catch (BadLocationException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 
 		return lines;

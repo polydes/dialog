@@ -9,8 +9,12 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import org.apache.log4j.Logger;
+
 public class DialogHighlighter implements Highlighter
 {
+	private static final Logger log = Logger.getLogger(DialogHighlighter.class);
+	
 	public static final Color TEXT_COLOR_BASE = Color.WHITE;
 	public static final Color TEXT_COLOR_TAG = new Color(0x95BED8);
 	public static final Color TEXT_COLOR_TAG_DATA = new Color(0x7D8C93);
@@ -78,7 +82,7 @@ public class DialogHighlighter implements Highlighter
 		}
 		catch (BadLocationException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		
 		boolean commented = false;
@@ -117,7 +121,7 @@ public class DialogHighlighter implements Highlighter
 					}
 					catch (BadLocationException e)
 					{
-						e.printStackTrace();
+						log.error(e.getMessage(), e);
 					}
 				}
 				
@@ -190,7 +194,7 @@ public class DialogHighlighter implements Highlighter
 		}
 		catch (BadLocationException e)
 		{
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 		
 		for(i = 0; i < s.length(); ++i)

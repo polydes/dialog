@@ -10,6 +10,7 @@ import java.util.function.Function;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.polydes.common.util.Lang;
 import com.polydes.datastruct.DataStructuresExtension;
@@ -24,6 +25,8 @@ import stencyl.sw.util.Worker;
 
 public class V6_ExtensionSubmodules implements Worker
 {
+	private static final Logger log = Logger.getLogger(V6_ExtensionSubmodules.class);
+	
 	private class Structure extends LinkedHashMap<String,String>
 	{
 		public Structure(Map<String,String> map)
@@ -59,7 +62,7 @@ public class V6_ExtensionSubmodules implements Worker
 		Function<String, String> convertRatioPoint = s -> convertRatioPoint(s);
 		Function<String, String> convertStrArrToSndArr = s -> stringArrayToSoundArray(s);
 		
-		Structure log = make("dialog.ds.ext.Logic", "Dialog/Plugins/Logic");
+		Structure logic = make("dialog.ds.ext.Logic", "Dialog/Plugins/Logic");
 		Structure ms = make("dialog.ds.ext.MessagingScripts", "Dialog/Plugins/Messaging Scripts");
 		Structure ss = make("dialog.ds.ext.SoundScripts", "Dialog/Plugins/Sound Scripts");
 		
@@ -151,7 +154,7 @@ public class V6_ExtensionSubmodules implements Worker
 				StringUtils.join(
 					Lang.mapCA
 					(
-						Lang.arraylist(log,ms,ss,db,ts,eg,cs,sks,fs,te,dop),
+						Lang.arraylist(logic,ms,ss,db,ts,eg,cs,sks,fs,te,dop),
 						Integer.class,
 						(struct) -> Util.parseInt(((Structure) struct).get("struct_id"), -1)
 					),
@@ -167,8 +170,8 @@ public class V6_ExtensionSubmodules implements Worker
 			convert(scalingImage, "origin", convertRatioPoint);
 			convert(scalingImage, "border", convertPointToInsets);
 			
-			System.out.println("Scaling Image");
-			System.out.println(scalingImage);
+			log.debug("Scaling Image");
+			log.debug(scalingImage);
 		}
 		
 		for(Structure tween : loopDef("dialog.ds.TweenTemplate"))
@@ -176,8 +179,8 @@ public class V6_ExtensionSubmodules implements Worker
 			convert(tween, "positionStart", convertRatioPoint);
 			convert(tween, "positionStop", convertRatioPoint);
 			
-			System.out.println("Tween");
-			System.out.println(tween);
+			log.debug("Tween");
+			log.debug(tween);
 		}
 		
 		for(Structure window : loopDef("dialog.ds.WindowTemplate"))
@@ -187,8 +190,8 @@ public class V6_ExtensionSubmodules implements Worker
 			convert(window, "scaleHeightSize", convertRatioInt);
 			convert(window, "insets", s -> convertRectangleToInsets(s, "[%s,%s,%s,%s]"));
 			
-			System.out.println("Window");
-			System.out.println(window);
+			log.debug("Window");
+			log.debug(window);
 		}
 		
 		for(Structure s : modifiedStructures)
@@ -225,7 +228,7 @@ public class V6_ExtensionSubmodules implements Worker
 	
 	private void set(Structure s, String field, String value)
 	{
-		System.out.println(s.get("[NAME]") + ":" + field + "=" + value);
+		log.debug(s.get("[NAME]") + ":" + field + "=" + value);
 		if(value != null && !value.isEmpty())
 			s.put(field, value);
 	}
