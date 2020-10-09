@@ -1,7 +1,5 @@
 package com.polydes.dialog.data.def.elements;
 
-import java.util.ArrayList;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -9,6 +7,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
+import com.polydes.common.data.core.DataList;
 import com.polydes.common.io.XML;
 import com.polydes.common.nodes.DefaultBranch;
 import com.polydes.common.nodes.DefaultLeaf;
@@ -30,10 +29,16 @@ import com.polydes.dialog.data.def.elements.StructureArgument.Type;
 public class StructureCommand extends SDE
 {
 	public String name;
-	public ArrayList<StructureArgument> args;
+	public DataList/*<StructureArgument>*/ args;
 	public String description;
 	
-	public StructureCommand(String name, ArrayList<StructureArgument> args, String description)
+	private static StructureArgumentType sat;
+	static
+	{
+		sat = new StructureArgumentType();
+	}
+	
+	public StructureCommand(String name, DataList/*<StructureArgument>*/ args, String description)
 	{
 		this.name = name;
 		this.args = args;
@@ -44,7 +49,7 @@ public class StructureCommand extends SDE
 	public String getDisplayLabel()
 	{
 		return "<" + name + (args.isEmpty() ? ">" :
-			" " + StringUtils.join(Lang.mapCA(args, String.class, (arg) -> arg.type.name()), " ") + ">");
+			" " + StringUtils.join(Lang.mapCA(args, String.class, (arg) -> ((StructureArgument) arg).type.name()), " ") + ">");
 	}
 	
 	public String getFullHtmlDisplayLabel()
@@ -53,9 +58,15 @@ public class StructureCommand extends SDE
 				ColorUtil.encode24(DialogHighlighter.TEXT_COLOR_TAG),
 				StringEscapeUtils.escapeHtml4("<" + name),
 				ColorUtil.encode24(DialogHighlighter.TEXT_COLOR_TAG_DATA),
-				args.isEmpty()? "" : " " + StringUtils.join(Lang.mapCA(args, String.class, (arg) -> arg.name+":"+arg.type.name()), " "),
+				args.isEmpty()? "" : " " + StringUtils.join(Lang.mapCA(args, String.class, this::getSArgInfo), " "),
 				StringEscapeUtils.escapeHtml4(">"),
 				description);
+	}
+	
+	private String getSArgInfo(Object argObj /* StructureArgument */)
+	{
+		StructureArgument arg = (StructureArgument) argObj;
+		return arg.name+":"+arg.type.name();
 	}
 	
 	public class StructureCommandPanel extends StructureObjectPanel
@@ -63,8 +74,6 @@ public class StructureCommand extends SDE
 		public StructureCommandPanel(final StructureCommand cmd, PropertiesSheetStyle style)
 		{
 			super(style, cmd);
-			
-			StructureArgumentType sat = new StructureArgumentType();
 			
 			sheet.build()
 			
@@ -87,7 +96,11 @@ public class StructureCommand extends SDE
 				preview.lightRefreshLeaf(previewKey);
 			});
 			
-			sheet.addPropertyChangeListener("args", event -> {
+			//XXX: PropertiesSheetSupport doesn't fire propertyChangeEvents for mutable
+			//objects that are updated in-place.
+			//
+			//sheet.addPropertyChangeListener("args", event -> {
+			sheet.getField("args").getEditor().addListener(() -> {
 				previewKey.setName(cmd.getDisplayLabel());
 				preview.lightRefreshLeaf(previewKey);
 			});
@@ -135,9 +148,9 @@ public class StructureCommand extends SDE
 			return new StructureCommand(XML.read(e, "name"), readArgs(e), XML.read(e, "desc"));
 		}
 		
-		private ArrayList<StructureArgument> readArgs(Element e)
+		private DataList/*<StructureArgument>*/ readArgs(Element e)
 		{
-			ArrayList<StructureArgument> args = new ArrayList<>();
+			DataList/*<StructureArgument>*/ args = new DataList(sat);
 			XML.children(e).forEach((child) ->
 				args.add(new StructureArgument(XML.read(child, "name"), Type.valueOf(XML.read(child, "type"))))
 			);
@@ -150,8 +163,9 @@ public class StructureCommand extends SDE
 			e.setAttribute("name", object.name);
 			e.setAttribute("desc", object.description);
 			
-			for(StructureArgument arg : object.args)
+			for(Object argObj : object.args)
 			{
+				StructureArgument arg = (StructureArgument) argObj;
 				Element child = e.getOwnerDocument().createElement("arg");
 				XML.write(child, "name", arg.name);
 				XML.write(child, "type", arg.type.name());
@@ -162,7 +176,7 @@ public class StructureCommand extends SDE
 		@Override
 		public StructureCommand create(StructureDefinition def, String nodeName)
 		{
-			return new StructureCommand(nodeName, new ArrayList<>(), "");
+			return new StructureCommand(nodeName, new DataList(sat), "");
 		}
 		
 		@Override

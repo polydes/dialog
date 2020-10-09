@@ -90,7 +90,13 @@ public class StructureArgument
 		{
 			return t.name + ":" + t.type;
 		}
-
+		
+		@Override
+		public String toDisplayString(StructureArgument data)
+		{
+			return encode(data);
+		}
+		
 		@Override
 		public StructureArgument copy(StructureArgument t)
 		{
@@ -109,7 +115,7 @@ public class StructureArgument
 		
 		public StructureArgumentEditor(PropertiesSheetStyle style)
 		{
-			nameEditor = new StringType.SingleLineStringEditor(null, style);
+			nameEditor = new StringType.SingleLineStringEditor(new EditorProperties(), style);
 			nameEditor.addListener(() -> updated());
 			
 			typeEditor = new EnumEditor<Type>(Type.class);
