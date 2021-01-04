@@ -10,13 +10,13 @@
 	<property name="main" value="com.polydes.dialog.DialogExtension" />
 	<property name="type" value="game" />
 	
-	<property name="dependsOn" value="stencylbuild-10450,toolset-com.polydes.datastruct-2.0.0,engine-com.polydes.dialog-2.0.4" />
+	<property name="dependsOn" value="stencyl-4.0.3,toolset-com.polydes.datastruct-2.0.0,engine-com.polydes.dialog-2.0.4" />
 	
 	<property name="name" value="Dialog Extension" />
 	<property name="description" value="Toolset side of the Dialog Extension." />
 	<property name="author" value="Justin &amp; Irock" />
 	<property name="internalVersion" value="6" />
-	<property name="version" value="2.0.6" />
+	<property name="version" value="2.0.7" />
 	
 	<property name="dsjarname" value="com.polydes.datastruct.jar" />
 	
@@ -46,7 +46,7 @@
 	
 	<target name="dist">
 		
-		<var name="clspath" value="${clspath}:${buildpath}/${dsjarname}" />
+		<var name="clspath" value="${swjar.4.0.3}:${buildpath}/${dsjarname}" />
 		<var name="usinglibs" value="true" />
 		
 		<antcall>
