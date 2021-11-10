@@ -1,20 +1,8 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.behavior.Script;
 import com.stencyl.models.Sound;
 import openfl.geom.Rectangle;
-
-#elseif unity
-
-import cs.NativeArray;
-import dialog.unity.compat.Typedefs;
-import dialog.unity.compat.*;
-import unityeditor.*;
-import unityengine.*;
-
-#end
 
 import dialog.ds.*;
 import dialog.core.*;
@@ -24,31 +12,11 @@ class DialogBase extends dialog.core.DialogExtension
 	private var window:Null<DialogWindow>;
 	private var messageBegan:Bool;
 
-	#if unity
-	private var style:DialogBase;
-
-	public var msgWindow:Null<WindowTemplate>;
-	public var msgBounds:Rectangle;
-	public var msgFont:Font;
-	public var msgTypeSpeed:Float;
-	public var msgStartSound:Null<Sound>;
-	public var controlAttribute:String;
-	public var lineSpacing:Int;
-	public var charSpacing:Int;
-	public var clearSound:Null<Sound>;
-	public var closeSound:Null<Sound>;
-	public var endSound:Null<Sound>;
-	#elseif stencyl
 	private var style:dialog.ds.ext.DialogBase;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)
@@ -115,7 +83,6 @@ class DialogBase extends dialog.core.DialogExtension
 
 		addCallback(Dialog.RESTORE_DEFAULTS, function():Void
 		{
-			#if stencyl
 			if(style.msgBounds == null)
 			{
 				if(window != null)
@@ -128,14 +95,11 @@ class DialogBase extends dialog.core.DialogExtension
 			}
 			else
 			{
-			#end
 				dg.msgX = Std.int(style.msgBounds.x);
 				dg.msgY = Std.int(style.msgBounds.y);
 				dg.msgW = Std.int(style.msgBounds.width);
 				dg.msgH = Std.int(style.msgBounds.height);
-			#if stencyl
 			}
-			#end
 			dg.defaultBounds = new Rectangle(dg.msgX, dg.msgY, dg.msgW, dg.msgH);
 			dg.msgColor = -1;
 			dg.msgFont = DialogFont.get(style.msgFont);
@@ -215,7 +179,7 @@ class DialogBase extends dialog.core.DialogExtension
 		return window;
 	}
 
-	public function getStyle(): #if stencyl dialog.ds.ext.DialogBase #elseif unity DialogBase #end
+	public function getStyle():dialog.ds.ext.DialogBase
 	{
 		return style;
 	}

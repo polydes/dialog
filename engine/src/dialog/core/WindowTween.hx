@@ -1,22 +1,10 @@
 package dialog.core;
 
-#if stencyl
-
 import com.stencyl.Engine;
 
 import nme.display.BitmapData;
 
 import nme.geom.Point;
-
-#elseif unity
-
-import unityengine.*;
-import dialog.unity.compat.Typedefs;
-
-using dialog.unity.extension.RectUtil;
-using dialog.unity.extension.VectorUtil;
-
-#end
 
 import dialog.ds.*;
 import dialog.geom.*;

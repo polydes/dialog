@@ -1,14 +1,6 @@
 package dialog.core;
 
-#if stencyl
-
 import nme.display.BitmapData;
-
-#elseif unity
-
-import dialog.unity.compat.Typedefs;
-
-#end
 
 interface DrawHandler
 {

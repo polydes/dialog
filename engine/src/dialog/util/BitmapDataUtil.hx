@@ -1,7 +1,5 @@
 package dialog.util;
 
-#if stencyl
-
 import nme.display.*;
 import nme.geom.*;
 
@@ -12,16 +10,6 @@ import com.stencyl.models.actor.Sprite;
 import com.stencyl.models.Font;
 import com.stencyl.Data;
 import com.stencyl.Engine;
-
-#elseif unity
-
-import unityengine.*;
-
-import dialog.unity.compat.ColorTransform;
-import dialog.unity.compat.Typedefs;
-import dialog.unity.extension.TextureUtil;
-
-#end
 
 import dialog.core.DialogFont;
 import dialog.geom.*;
@@ -148,8 +136,6 @@ class BitmapDataUtil
 		var sX = newWidth / src.width;
 		var sY = newHeight / src.height;
 		
-		#if stencyl
-
 		if(newWidth <= 0 || newHeight <= 0)
 		{
 			return new BitmapData(1, 1, true, 0);
@@ -161,12 +147,6 @@ class BitmapDataUtil
 		matrix.scale(sX, sY);
 		newImg.draw(src, matrix);
 		return newImg;
-
-		#elseif unity
-
-		return TextureUtil.getScaled(src, sX, sY);
-
-		#end
 	}
 
 	public static function getDimTiled(src:BitmapData, newWidth:Int, newHeight:Int):BitmapData
@@ -174,8 +154,6 @@ class BitmapDataUtil
 		var sX = newWidth / src.width;
 		var sY = newHeight / src.height;
 		
-		#if stencyl
-
 		var tilesX:Int = Math.ceil(sX);
 		var tilesY:Int = Math.ceil(sY);
 
@@ -192,13 +170,6 @@ class BitmapDataUtil
 		}
 
 		return newImg;
-
-		#elseif unity
-
-		return TextureUtil.getTiled(src, sX, sY);
-
-		#end
-
 	}
 
 	public static function getDimScaledPartial(src:BitmapData, rect:Rectangle, newWidth:Int, newHeight:Int):BitmapData
@@ -215,8 +186,6 @@ class BitmapDataUtil
 
 	public static function getScaled(src:BitmapData, sX:Float, sY:Float):BitmapData
 	{
-		#if stencyl
-
 		var newWidth = Std.int(src.width * sX);
 		var newHeight = Std.int(src.height * sY);
 
@@ -231,18 +200,10 @@ class BitmapDataUtil
 		matrix.scale(sX, sY);
 		newImg.draw(src, matrix);
 		return newImg;
-
-		#elseif unity
-
-		return TextureUtil.getScaled(src, sX, sY);
-
-		#end
 	}
 
 	public static function getTiled(src:BitmapData, sX:Float, sY:Float):BitmapData
 	{
-		#if stencyl
-
 		var tilesX:Int = Math.ceil(sX);
 		var tilesY:Int = Math.ceil(sY);
 
@@ -259,13 +220,6 @@ class BitmapDataUtil
 		}
 
 		return newImg;
-
-		#elseif unity
-
-		return TextureUtil.getTiled(src, sX, sY);
-
-		#end
-
 	}
 
 	public static function getScaledPartial(src:BitmapData, rect:Rectangle, sX:Float, sY:Float):BitmapData
@@ -287,27 +241,14 @@ class BitmapDataUtil
 
 	public static function drawImage(img:BitmapData, brush:BitmapData, x:Int, y:Int):Void
 	{
-		#if stencyl
-
 		img.copyPixels(brush, brush.rect, new Point(x, y));
-
-		#elseif unity
-
-		TextureUtil.drawTexture(img, brush, x, y);
-
-		#end
 	}
 
 	public static function newTransparentImg(w:Int, h:Int):BitmapData
 	{
-		var bmd = new BitmapData(w, h #if stencyl, true, 0 #end);
-		#if unity
-		bmd.fillColor(Color.clear);
-		#end
+		var bmd = new BitmapData(w, h true, 0);
 		return bmd;
 	}
-
-	#if stencyl
 
 	public static function getImagesFromAnimation(type:ActorType, animName:String):Array<BitmapData>
 	{
@@ -348,38 +289,6 @@ class BitmapDataUtil
 	{
 		return cast(o, BitmapData);
 	}
-
-	#elseif unity
-
-	public static function clone(tex:Texture2D)
-	{
-		return Object.Instantiate(tex);
-	}
-
-	public static function fillColor(tex:Texture2D, color:Color):Void
-	{
-		var fillColorArray = tex.GetPixels();
-
-		for(i in 0...fillColorArray.Length)
-		{
-			fillColorArray[i] = color;
-		}
-
-		tex.SetPixels(fillColorArray);
-		tex.Apply();
-	}
-
-	public static function colorTransform(tex:Texture2D, rect:Rectangle, ct:ColorTransform)
-	{
-		TextureUtil.colorTransform(tex, rect, ct);
-	}
-
-	public static function copyPixels(tex:Texture2D, brush:Texture2D, src:Rectangle, p:Point)
-	{
-		TextureUtil.copyPixels(tex, brush, src, p);
-	}
-
-	#end
 
 	private static var zeroPoint = new Point(0, 0);
 }

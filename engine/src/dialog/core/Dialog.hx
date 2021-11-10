@@ -1,7 +1,5 @@
 package dialog.core;
 
-#if stencyl
-
 import com.stencyl.behavior.Script;
 import com.stencyl.graphics.fonts.BitmapFont;
 import com.stencyl.graphics.G;
@@ -14,23 +12,12 @@ import com.polydes.datastruct.DataStructures;
 
 import openfl.geom.*;
 
-#elseif unity
-
-import unityengine.*;
-
-using hugs.HUGSWrapper.ComponentMethods;
-using hugs.HUGSWrapper.GameObjectMethods;
-
-#end
-
 import dialog.ds.*;
 
 class Dialog
 {
-	#if stencyl
 	private static var _instance:Dialog = null;
 	private static var _init = false;
-	#end
 
 	public static inline var ALWAYS:Int = 0;
 	public static inline var WHEN_CREATED:Int = 1;
@@ -92,22 +79,16 @@ class Dialog
 		specialMacros = null;
 	}
 
-	#if stencyl
-
 	public static var dialogBoxes:Array<DialogBox>;
 	public static var animations:Array<AnimatedImage>;
 
 	public static var defaultStyle:Style;
-
-	#end
 
 	public static var dialogCache:Map<String, DialogChunk> = null;
 
 	public static var macros:Map<String, String> = null;
 	public static var specialMacros:Map<String, Array<String>> = null;
 	//ID1 -> Text1, ID2, Text2, ID3, Text3...
-
-	#if stencyl
 
 	private function new()
 	{
@@ -132,13 +113,9 @@ class Dialog
 		return _instance;
 	}
 
-	#end
-
 	//==================================================================
 	//==================================================================
 	//==================================================================
-
-	#if stencyl
 
 	private var o:Dynamic;
 	private var call:String;
@@ -204,49 +181,17 @@ class Dialog
 		_instance.updateDialogBoxes();
 	}
 
-	#elseif unity
-
-	public static function cbCall(dgAddress:String, style:Style, o:Dynamic, call:String):Void
-	{
-		if(dialogCache == null)
-			loadDialogCache();
-
-		var dg:DialogBox = Camera.main.getOrAddTypedComponent(DialogBox);
-		dg.setup(getDg(dgAddress), cast(style, Style));
-		dg.callbackObject = o;
-		dg.callbackMessage = call;
-		dg.beginDialog();
-	}
-
-	public static function globalCall(dgText:String, style:Style, o:Dynamic, call:String):Void
-	{
-		if(dialogCache == null)
-			loadDialogCache();
-
-		var dg:DialogBox = Camera.main.getOrAddTypedComponent(DialogBox);
-		dg.setup(dgText, cast(style, Style));
-		dg.callbackObject = o;
-		dg.callbackMessage = call;
-		dg.beginDialog();
-	}
-
-	#end
-
 	//==================================================================
 	//==================================================================
 	//==================================================================
 
-	public #if unity static #end function loadDialogCache():Void
+	public function loadDialogCache():Void
 	{
 		if(dialogCache != null) return;
 
 		dialogCache = new Map<String, DialogChunk>();
 
-		#if stencyl
 		var dgLines:Array<String> = Util.getFileLines("dialog.txt");
-		#elseif unity
-		var dgLines:Array<String> = Util.getFileLines("Dialog/dialog");
-		#end
 
 		var curAddress:String = null;
 		var curDgString:String = "";
@@ -255,11 +200,7 @@ class Dialog
 		macros = new Map<String, String>();
 		specialMacros = new Map<String, Array<String>>();
 
-		#if stencyl
 		var m_data:Array<String> = Util.getFileLines("macros.txt");
-		#elseif unity
-		var m_data:Array<String> = Util.getFileLines("Dialog/macros");
-		#end
 		var cur_m_data:Array<String> = null;
 		var left:String = "";
 		var right:String = "";
@@ -318,9 +259,9 @@ class Dialog
 
 	private static inline var leftDelimiter:String = "{";
 	private static inline var rightDelimiter:String = "}";
-	private #if unity static #end var delimiterFound:Bool = false;
+	private var delimiterFound:Bool = false;
 
-	public #if unity static #end function replaceMacros(s:String):String
+	public function replaceMacros(s:String):String
 	{
 		if(s.indexOf(leftDelimiter) == -1)
 			return s;
@@ -363,7 +304,7 @@ class Dialog
 		return ns;
 	}
 
-	public #if unity static #end function replaceSpecialMacros(s:String):String
+	public function replaceSpecialMacros(s:String):String
 	{
 		delimiterFound = false;
 
@@ -422,8 +363,6 @@ class Dialog
 
 		return ns;
 	}
-
-	#if stencyl
 
 	public function loadScene(state:Engine):Void
 	{
@@ -486,8 +425,6 @@ class Dialog
 			curDialogBox.draw();
 		}
 	}
-
-	#end
 
 	public static function parseMessage(msg:String):Array<Dynamic>
 	{

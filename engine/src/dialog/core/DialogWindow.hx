@@ -1,19 +1,9 @@
 package dialog.core;
 
-#if stencyl
-
 import com.stencyl.Engine;
 
 import nme.display.BitmapData;
 import nme.geom.ColorTransform;
-
-#elseif unity
-
-import unityengine.*;
-import dialog.unity.compat.*;
-import dialog.unity.compat.Typedefs;
-
-#end
 
 import dialog.ds.*;
 import dialog.geom.*;
@@ -114,18 +104,10 @@ class DialogWindow
 		tween.update(step);
 		var progress:Float = tween.elapsed / tween.duration;
 
-		#if stencyl
-
 		var newImg:BitmapData = tween.srcImg.getScaled(tween.scale.get(progress).x, tween.scale.get(progress).y);
 		var ct:ColorTransform = new ColorTransform();
 		ct.alphaMultiplier = tween.opacity.get(progress);
 		newImg.colorTransform(newImg.rect, ct);
-
-		#elseif unity
-
-		var newImg:BitmapData = tween.srcImg.getScaled(tween.scale.get(progress).x, tween.scale.get(progress).y);
-
-		#end
 
 		img.image = newImg;
 		position = tween.pos1.get(progress);

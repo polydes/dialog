@@ -1,15 +1,6 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.behavior.Script;
-
-#elseif unity
-
-import dialog.unity.compat.*;
-import unityengine.*;
-
-#end
 
 import dialog.core.*;
 
@@ -28,12 +19,12 @@ class SoundScripts extends dialog.core.DialogExtension
 
 		cmds =
 		[
-			"playsound"=>playsound #if stencyl,
+			"playsound"=>playsound,
 			"loopsound"=>loopsound,
 			"stopsound"=>stopsound,
 			"playchan"=>playchan,
 			"loopchan"=>loopchan,
-			"stopchan"=>stopchan #end
+			"stopchan"=>stopchan
 		];
 	}
 
@@ -41,8 +32,6 @@ class SoundScripts extends dialog.core.DialogExtension
 	{
 		Script.playSound(Util.sound(sound));
 	}
-
-	#if stencyl
 
 	public function loopsound(sound:String):Void
 	{
@@ -68,6 +57,4 @@ class SoundScripts extends dialog.core.DialogExtension
 	{
 		Script.stopSoundOnChannel(channel);
 	}
-
-	#end
 }

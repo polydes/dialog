@@ -1,7 +1,5 @@
 package dialog.core;
 
-#if stencyl
-
 import com.stencyl.graphics.G;
 import com.stencyl.Engine;
 
@@ -135,5 +133,3 @@ class G2
 		return p;
 	}
 }
-
-#end

@@ -1,22 +1,10 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.models.Font;
 import com.stencyl.Engine;
 
 import nme.display.BitmapData;
 import nme.geom.Point;
-
-#elseif unity
-
-import dialog.unity.compat.*;
-import dialog.unity.compat.Typedefs;
-import unityengine.*;
-
-using dialog.unity.extension.FontUtil;
-
-#end
 
 import dialog.core.*;
 import dialog.ds.*;
@@ -31,27 +19,11 @@ class CharacterScripts extends dialog.core.DialogExtension
 	private var nameboxVisible:Bool;
 	private var faceBitmap:BitmapData;
 
-	#if unity
-	private var style:CharacterScripts;
-
-	public var nameboxWindow:WindowTemplate;
-	public var nameboxFont:Font;
-	public var faceImagePrefix:String;
-	public var faceRelation:String;
-	public var faceOrigin:RatioPoint;
-	public var facePos:RatioPoint;
-	public var faceMsgOffset:Rectangle;
-	#elseif stencyl
 	private var style:dialog.ds.ext.CharacterScripts;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)

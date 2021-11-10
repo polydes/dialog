@@ -1,21 +1,11 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.behavior.Script;
 import com.stencyl.models.Sound;
 import com.stencyl.Input;
 
 import nme.display.BitmapData;
 import nme.geom.Point;
-
-#elseif unity
-
-import unityengine.*;
-import dialog.unity.compat.*;
-import dialog.unity.compat.Typedefs;
-
-#end
 
 import dialog.core.*;
 import dialog.ds.*;
@@ -46,35 +36,11 @@ class DialogOptions extends dialog.core.DialogExtension
 	private var windowPause:Int;
 	private var selectedTarget:String;
 
-	#if unity
-	private var style:DialogOptions;
-
-	public var windowTemplate:WindowTemplate;
-	public var windowFont:Font;
-	public var cursorType:String;
-	public var cursorImage:Null<BitmapData>;
-	public var cursorOffset:Point;
-	public var cursorWindow:Null<WindowTemplate>;
-	public var choiceLayout:String;
-	public var selectButton:String;
-	public var scrollWait:Int;
-	public var scrollDuration:Int;
-	public var appearSound:Null<Sound>;
-	public var changeSound:Null<Sound>;
-	public var confirmSound:Null<Sound>;
-	public var itemPadding:Int;
-	public var inactiveTime:Int;
-	#elseif stencyl
 	private var style:dialog.ds.ext.DialogOptions;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)

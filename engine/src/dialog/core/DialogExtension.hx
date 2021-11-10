@@ -2,19 +2,12 @@ package dialog.core;
 
 import dialog.ds.*;
 
-#if unity
-@:build(dialog.unity.EditorBuilder.prepareForUnityInspector())
-@:autoBuild(dialog.unity.EditorBuilder.prepareForUnityInspector())
-@:autoBuild(dialog.unity.EditorBuilder.markForMenuGeneration())
-#end
 @:keepSub
-class DialogExtension #if unity extends unityengine.ScriptableObject #end
+class DialogExtension
 {
 	private var dg:DialogBox;
 
-	#if !unity
 	public var name:String;
-	#end
 
 	public var cmds:Map<String, Dynamic>; //cmdName, <Function>
 	public var callbacks:Map<Int, Array<Void->Void>>; //callbackConstant, <Array> //id, <Function>
@@ -22,9 +15,6 @@ class DialogExtension #if unity extends unityengine.ScriptableObject #end
 
 	public function new()
 	{
-		#if unity
-		super();
-		#end
 	}
 
 	public function setup(dg:DialogBox, style:Dynamic)

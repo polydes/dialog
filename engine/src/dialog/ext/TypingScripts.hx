@@ -1,20 +1,8 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.behavior.Script;
 import com.stencyl.models.Sound;
 import com.stencyl.Data;
-
-#elseif unity
-
-import cs.NativeArray;
-
-import dialog.unity.compat.Typedefs;
-import dialog.unity.compat.*;
-import unityengine.*;
-
-#end
 
 import dialog.core.*;
 
@@ -27,23 +15,11 @@ class TypingScripts extends dialog.core.DialogExtension
 	private var typeSoundArray:Array<Sound>;
 	private var storedTypeSound:Array<Sound>;
 
-	#if unity
-	private var style:TypingScripts;
-
-	public var defaultRandomTypeSounds:Array<Sound>;
-	public var characterSkipSFX:Int;
-	public var playTypeSoundOnSpaces:Bool;
-	#elseif stencyl
 	private var style:dialog.ds.ext.TypingScripts;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)

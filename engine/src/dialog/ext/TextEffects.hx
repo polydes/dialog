@@ -1,19 +1,7 @@
 package dialog.ext;
 
-#if stencyl
-
 import nme.display.BitmapData;
 import nme.geom.Point;
-
-#elseif unity
-
-import dialog.unity.compat.G2;
-import dialog.unity.compat.Typedefs;
-import unityengine.*;
-
-using dialog.unity.extension.VectorUtil;
-
-#end
 
 import dialog.core.*;
 
@@ -35,32 +23,11 @@ class TextEffects extends dialog.core.DialogExtension implements DrawHandler
 	private var revolveOn:Bool;
 	private var growOn:Bool;
 
-	#if unity
-	private var style:TextEffects;
-
-	public var v_maxShakeOffsetX:Int;
-	public var v_maxShakeOffsetY:Int;
-	public var v_shakeFrequency:Int;
-	public var s_magnitude:Int;
-	public var s_frequency:Int;
-	public var s_pattern:Int;
-	public var r_diameter:Int;
-	public var r_frequency:Int;
-	public var r_pattern:Int;
-	public var g_start:Float;
-	public var g_stop:Float;
-	public var g_duration:Int;
-	#elseif stencyl
 	private var style:dialog.ds.ext.TextEffects;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)
@@ -162,11 +129,7 @@ class TextEffects extends dialog.core.DialogExtension implements DrawHandler
 
 					p = p.add(new Point(-w / 2 * (s - 1), -h / 2 * (s - 1)));
 
-					#if unity
-					Graphics.DrawTexture(new Rect(p.x, p.y, w * s, h * s), draw.img);
-					#else
 					G2.drawImage(draw.img.getScaled(s, s), Std.int(p.x), Std.int(p.y), false, false);
-					#end
 				}
 				else
 					G2.drawImage(draw.img, Std.int(p.x), Std.int(p.y), false, false);

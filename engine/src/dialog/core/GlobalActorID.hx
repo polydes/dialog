@@ -1,14 +1,6 @@
 package dialog.core;
 
-#if stencyl
-
 typedef ActorImpl = com.stencyl.models.Actor;
-
-#elseif unity
-
-typedef ActorImpl = unityengine.GameObject;
-
-#end
 
 class GlobalActorID
 {

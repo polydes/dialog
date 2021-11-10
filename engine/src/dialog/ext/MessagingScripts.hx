@@ -1,18 +1,7 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.Engine;
 import com.stencyl.behavior.Script;
-
-#elseif unity
-
-import dialog.unity.compat.Script;
-import unityengine.*;
-
-using dialog.unity.extension.GameObjectUtil;
-
-#end
 
 import dialog.core.*;
 
@@ -43,16 +32,10 @@ class MessagingScripts extends dialog.core.DialogExtension
 			"showvar"=>showattr,
 			"show"=>show,
 
-			#if stencyl
 			"messagescene"=>messagescene,
 			"messageactor"=>messageactor,
 			"addtolist"=>addtolist,
 			"removefromlist"=>removefromlist,
-			#elseif unity
-			"saytogo"=>saytogo,
-			"saytogop"=>saytogop,
-			"saytogoc"=>saytogoc,
-			#end
 
 			"say"=>say,
 			"set"=>set,
@@ -72,12 +55,10 @@ class MessagingScripts extends dialog.core.DialogExtension
 				return attributes.get("" + source[1]);
 			case "actorbhv", "go":
 				return GlobalActorID.get("" + source[1]).getValue("" + source[2], "" + source[3]);
-			#if stencyl
 			case "scenebhv":
 				return Script.getValueForScene("" + source[1], "" + source[2]);
 			case "actor":
 				return GlobalActorID.get("" + source[1]).getActorValue("" + source[2]);
-			#end
 		}
 		return null;
 	}
@@ -92,12 +73,10 @@ class MessagingScripts extends dialog.core.DialogExtension
 				attributes.set("" + args[1], args[2]);
 			case "actorbhv", "go":
 				GlobalActorID.get("" + args[1]).setValue("" + args[2], "" + args[3], args[4]);
-			#if stencyl
 			case "scenebhv":
 				Script.setValueForScene("" + args[1], "" + args[2], args[3]);
 			case "actor":
 				GlobalActorID.get("" + args[1]).setActorValue("" + args[2], args[3]);
-			#end
 		}
 	}
 
@@ -116,7 +95,6 @@ class MessagingScripts extends dialog.core.DialogExtension
 		dg.insertMessage("" + object);
 	}
 
-	#if stencyl
 	public function addtolist(source:Array<Dynamic>):Void
 	{
 		analyzeAttr(source).push(source.pop());
@@ -126,7 +104,6 @@ class MessagingScripts extends dialog.core.DialogExtension
 	{
 		analyzeAttr(source).remove(source.pop());
 	}
-	#end
 
 	public function listset(source:Array<Dynamic>, index:Int, value:Dynamic):Void
 	{
@@ -159,8 +136,6 @@ class MessagingScripts extends dialog.core.DialogExtension
 		return Reflect.field(object, field);
 	}
 
-	#if stencyl
-
 	public function messagescene(behaviorName:String, messageName:String, args:Array<Dynamic>):Void
 	{
 		if(behaviorName == "all")
@@ -176,23 +151,4 @@ class MessagingScripts extends dialog.core.DialogExtension
 		else
 			GlobalActorID.get(actorname).say(behaviorName, messageName, args);
 	}
-
-	#elseif unity
-
-	public function saytogo(name:String, messageName:String, arg:Dynamic):Void
-	{
-		GlobalActorID.get(name).SendMessage(messageName, arg);
-	}
-
-	public function saytogop(name:String, messageName:String, arg:Dynamic):Void
-	{
-		GlobalActorID.get(name).SendMessageUpwards(messageName, arg);
-	}
-
-	public function saytogoc(name:String, messageName:String, arg:Dynamic):Void
-	{
-		GlobalActorID.get(name).BroadcastMessage(messageName, arg);
-	}
-
-	#end
 }

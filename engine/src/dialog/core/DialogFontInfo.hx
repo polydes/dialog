@@ -1,7 +1,5 @@
 package dialog.core;
 
-#if stencyl
-
 import com.stencyl.Data;
 import com.stencyl.Engine;
 import com.stencyl.models.Font;
@@ -12,29 +10,12 @@ import nme.display.BitmapData;
 import nme.geom.Point;
 import nme.geom.Rectangle;
 
-#elseif unity
-
-import dialog.unity.compat.Typedefs;
-import dialog.unity.compat.Engine;
-import dialog.unity.compat.G2;
-import unityengine.*;
-
-using dialog.unity.extension.FontUtil;
-using dialog.unity.extension.RectUtil;
-using dialog.unity.extension.VectorUtil;
-
-#end
-
 using dialog.util.BitmapDataUtil;
 
 class DialogFontInfo
 {
 	public var src:BitmapData;
 	public var lineHeight:Int;
-
-	#if unity
-	private var font:Font;
-	#end
 
 	public var base:Int;
 	public var aboveBase:Int; //(how many pixels should be present above the baseline)
@@ -49,15 +30,12 @@ class DialogFontInfo
 
 	private var charMap:Map<String, CharInfo>;
 
-	#if stencyl
 	private static var defaultFont:DialogFontInfo = null;
-	#end
 
 	private static var loadedFonts:Map<Font, DialogFontInfo> = new Map<Font, DialogFontInfo>();
 
 	public static function get(f:Font):DialogFontInfo
 	{
-		#if stencyl
 		if(f == null)
 		{
 			if(defaultFont == null)
@@ -65,7 +43,6 @@ class DialogFontInfo
 
 			return defaultFont;
 		}
-		#end
 
 		if(!loadedFonts.exists(f))
 			loadedFonts.set(f, new DialogFontInfo(f));
@@ -75,8 +52,6 @@ class DialogFontInfo
 
 	private function new(font:Font)
 	{
-		#if stencyl
-
 		var textBytes:String;
 
 		if(font == null)
@@ -124,19 +99,7 @@ class DialogFontInfo
 			}
 		}
 
-		#elseif unity
-
-		this.font = font;
-		src = font.getTexture();
-		preScaled = true;
-		lineHeight = font.lineHeight;
-		scaledLineHeight = font.lineHeight;
-
-		#end
-
 		charMap = new Map<String, CharInfo>();
-
-		#if stencyl
 
 		if (chars != null)
 		{
@@ -178,40 +141,6 @@ class DialogFontInfo
 				}
 			}
 		}
-
-		#elseif unity
-
-		var uch:CharacterInfo;
-		var ch:CharInfo;
-		var rect:Rectangle = new Rectangle(1, 1, 1, 1);
-		var point:Point = new Point(0, 0);
-		var xadvance:Int = 0;
-
-		for(i in 0...font.characterInfo.Length)
-		{
-			uch = font.characterInfo[i];
-			rect.x = 0;
-			rect.y = 0;
-			rect.width = uch.glyphWidth;
-			rect.height = uch.glyphHeight;
-
-			point.x = uch.minX;
-			point.y = font.lineHeight - uch.glyphHeight - uch.minY;
-
-			xadvance = uch.advance;
-
-			ch = new CharInfo
-			(
-				uch.index,
-				rect.clone(),
-				point.clone(),
-				xadvance
-			);
-
-			charMap.set(String.fromCharCode(uch.index), ch);
-		}
-
-		#end
 
 		calculateBase();
 	}
@@ -321,19 +250,9 @@ class DialogFontInfo
 
 	public function getScaledImg(c:String):BitmapData
 	{
-		#if stencyl
-
 		var char:CharInfo = charMap.get(c);
 		return src.getPartial(char.scaledPos);
-
-		#elseif unity
-
-		return font.getCharTexture(c);
-
-		#end
 	}
-
-	#if stencyl
 
 	private static var zeroPoint = new Point(0, 0);
 
@@ -387,8 +306,6 @@ class DialogFontInfo
 
 		return base;
 	}
-
-	#end
 }
 
 private class CharInfo

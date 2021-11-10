@@ -1,11 +1,5 @@
 package dialog.core;
 
-#if unity
-
-typedef AnimatedImage = dialog.legacy.AnimatedImage;
-
-#elseif stencyl
-
 import com.stencyl.Engine;
 
 import openfl.display.BitmapData;
@@ -104,4 +98,3 @@ class AnimatedImage
 		return frames[frame].clone();
 	}
 }
-#end

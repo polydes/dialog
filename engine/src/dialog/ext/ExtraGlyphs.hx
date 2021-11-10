@@ -1,18 +1,9 @@
 package dialog.ext;
 
-#if stencyl
-
 import nme.display.BitmapData;
 import nme.geom.Point;
 
 import com.stencyl.Engine;
-
-#elseif unity
-
-import dialog.unity.compat.G2;
-import unityengine.*;
-
-#end
 
 import dialog.core.*;
 
@@ -20,21 +11,11 @@ using dialog.util.BitmapDataUtil;
 
 class ExtraGlyphs extends dialog.core.DialogExtension
 {
-	#if unity
-	private var style:ExtraGlyphs;
-
-	public var glyphPadding:Int;
-	#elseif stencyl
 	private var style:dialog.ds.ext.ExtraGlyphs;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)
@@ -52,11 +33,7 @@ class ExtraGlyphs extends dialog.core.DialogExtension
 
 	public function glyph(glyphName:String):Void
 	{
-		#if stencyl
 		var img:BitmapData = Util.scaledImg(glyphName);
-		#elseif unity
-		var img:Texture2D = Resources.Load(glyphName);
-		#end
 
 		if(dg.drawX + img.width > dg.msgW)
 			dg.startNextLine();

@@ -1,25 +1,10 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.models.Actor;
 import com.stencyl.models.Sound;
 import com.stencyl.behavior.Script;
 import com.stencyl.Engine;
 import com.stencyl.Input;
-
-#elseif unity
-
-import cs.NativeArray;
-
-import dialog.unity.compat.Typedefs;
-import dialog.unity.compat.*;
-import unityengine.Object;
-
-using dialog.unity.extension.NativeArrayUtil;
-using dialog.unity.extension.GameObjectUtil;
-
-#end
 
 import dialog.core.*;
 import dialog.ds.*;
@@ -38,27 +23,11 @@ class FlowScripts extends dialog.core.DialogExtension
 
 	private var skipScripts:SkipScripts;
 
-	#if unity
-	private var style:FlowScripts;
-
-	public var animForPointer:String;
-	public var pointerPos:RatioPoint;
-	public var advanceDialogButton:String;
-	public var waitingSound:Null<Sound>;
-	public var waitingSoundInterval:Int;
-	public var inputSound:Null<Sound>;
-	//public var noInputSoundWithTags:Array<String>;
-	#elseif stencyl
 	private var style:dialog.ds.ext.FlowScripts;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)
@@ -86,12 +55,10 @@ class FlowScripts extends dialog.core.DialogExtension
 		addCallback(Dialog.WHEN_CREATED, function():Void
 		{
 			skipScripts = cast(dg.getExt("Skip Scripts"), SkipScripts);
-			#if stencyl
 			noInputSoundWithTags = [];
 			if(style.noInputSoundWithTags != null)
 				for(tagname in (style.noInputSoundWithTags: Array<String>))
 					noInputSoundWithTags.push("" + tagname);
-			#end
 		});
 		addCallback(Dialog.ALWAYS, function():Void
 		{
@@ -122,7 +89,7 @@ class FlowScripts extends dialog.core.DialogExtension
 				if(Input.pressed(style.advanceDialogButton) || skipLevel(2))
 				{
 					dg.paused = false;
-					pointer.end(#if unity dg #end);
+					pointer.end();
 					pointer = null;
 					if(clearAfterInput)
 					{
@@ -159,12 +126,10 @@ class FlowScripts extends dialog.core.DialogExtension
 				return Script.getGameAttribute("" + source[1]);
 			case "actorbhv", "go":
 				return GlobalActorID.get("" + source[1]).getValue("" + source[2], "" + source[3]);
-			#if stencyl
 			case "scenebhv":
 				return Script.getValueForScene("" + source[1], "" + source[2]);
 			case "actor":
 				return GlobalActorID.get("" + source[1]).getActorValue("" + source[2]);
-			#end
 		}
 		return null;
 	}
@@ -185,7 +150,7 @@ class FlowScripts extends dialog.core.DialogExtension
 	{
 		dg.paused = true;
 		pointer = new AnimatedImage(style.animForPointer);
-		pointer.start(#if unity dg #end);
+		pointer.start();
 
 		if(!skipLevel(2))
 		{

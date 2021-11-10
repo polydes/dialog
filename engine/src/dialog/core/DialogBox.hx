@@ -1,7 +1,5 @@
 package dialog.core;
 
-#if stencyl
-
 import com.stencyl.graphics.fonts.BitmapFont;
 import com.stencyl.graphics.G;
 import com.stencyl.models.Font;
@@ -11,25 +9,12 @@ import nme.display.BitmapData;
 import nme.geom.Point;
 import nme.geom.Rectangle;
 
-#elseif unity
-
-import unityengine.*;
-import dialog.unity.compat.Engine;
-import dialog.unity.compat.G2;
-import dialog.unity.compat.Typedefs;
-
-using dialog.unity.extension.FontUtil;
-using dialog.unity.extension.RectUtil;
-using dialog.unity.extension.NativeArrayUtil;
-
-#end
-
 import dialog.ext.*;
 import dialog.ds.*;
 
 using dialog.util.BitmapDataUtil;
 
-class DialogBox #if unity extends MonoBehaviour #end
+class DialogBox
 {
 	public var dialogSource:String;
 	public var style:Style; //Use style to retrieve [default prefs]
@@ -38,12 +23,6 @@ class DialogBox #if unity extends MonoBehaviour #end
 	public var graphicsCallbacks:Map<String, Void->Void>; //layerName -> Function
 	public var layers:Array<String>;
 	public var cmds:Map<String, Dynamic>; //cmdName, <Function>
-
-	#if unity
-	public var callbackObject:Dynamic;
-	public var callbackMessage = "";
-	public var animations:Array<AnimatedImage>;
-	#end
 
 	public var lines:Array<DialogLine>;
 	public var curLine:DialogLine;
@@ -73,23 +52,10 @@ class DialogBox #if unity extends MonoBehaviour #end
 	public var typeIndex:Int;
 	public var stepTimer:Int = 0;
 
-	#if stencyl
 	public function new(text:String, style:Style)
-	#elseif unity
-	public function setup(text:String, style:Style)
-	#end
 	{
-		#if stencyl
-
 		if(style == null)
 			style = Dialog.defaultStyle;
-
-		#elseif unity
-
-		animations = new Array<AnimatedImage>();
-		//TODO
-
-		#end
 
 		dialogSource = text;
 
@@ -320,18 +286,7 @@ class DialogBox #if unity extends MonoBehaviour #end
 		closeMessage();
 		runCallbacks(Dialog.WHEN_MESSAGE_ENDS);
 
-		#if stencyl
-
 		Dialog.get().removeDialogBox(this);
-
-		#elseif unity
-
-		if(callbackObject != null && callbackMessage != "")
-			Reflect.callMethod(callbackObject, Reflect.field(callbackObject, callbackMessage), []);
-
-		Object.Destroy(this);
-
-		#end
 	}
 
 	public var defaultBounds:Rectangle;
@@ -526,40 +481,6 @@ class DialogBox #if unity extends MonoBehaviour #end
 		return list;
 	}
 
-	#if unity
-	public function Update():Void
-	{
-		for(curAnimation in animations)
-		{
-			curAnimation.update();
-		}
-
-		update();
-	}
-
-	public function OnPostRender():Void
-	{
-		draw();
-	}
-
-	public function addAnimation(anim:AnimatedImage):Void
-	{
-		animations.push(anim);
-	}
-
-	public function removeAnimation(anim:AnimatedImage):Void
-	{
-		for(i in 0...animations.length)
-		{
-			if(animations[i] == anim)
-			{
-				animations.splice(i, 1);
-				break;
-			}
-		}
-	}
-	#end
-
 	public function update():Void
 	{
 		if(msg == null)
@@ -588,12 +509,7 @@ class DialogBox #if unity extends MonoBehaviour #end
 	{
 		if(visible)
 		{
-			#if stencyl
 			Engine.engine.g.alpha = 1;
-			#elseif unity
-			GL.PushMatrix();
-			GL.LoadPixelMatrix(0, Screen.width, Screen.height, 0);
-			#end
 
 			for(layerKey in layers)
 			{
@@ -606,10 +522,6 @@ class DialogBox #if unity extends MonoBehaviour #end
 					trace("Undefined draw key: " + layerKey);
 				}
 			}
-
-			#if unity
-			GL.PopMatrix();
-			#end
 		}
 	}
 

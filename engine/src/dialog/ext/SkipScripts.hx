@@ -1,19 +1,9 @@
 package dialog.ext;
 
-#if stencyl
-
 import com.stencyl.behavior.Script;
 import com.stencyl.models.Sound;
 import com.stencyl.Input;
 import com.stencyl.Data;
-
-#elseif unity
-
-import dialog.unity.compat.Typedefs;
-import dialog.unity.compat.*;
-import cs.NativeArray;
-
-#end
 
 import dialog.core.*;
 
@@ -28,36 +18,14 @@ class SkipScripts extends dialog.core.DialogExtension
 
 	private var typingScript:TypingScripts;
 
-	#if stencyl
 	public var fastSound:Array<Sound>;
 	public var zoomSound:Array<Sound>;
-	#end
 
-	#if unity
-	private var style:SkipScripts;
-
-	public var fastSpeed:Float;
-	public var fastButton:String;
-	public var fastSound:Array<Sound>;
-	public var fastSoundInterval:Int;
-	public var zoomSpeed:Float;
-	public var zoomButton:String;
-	public var zoomSound:Array<Sound>;
-	public var zoomSoundInterval:Int;
-	public var instantButton:String;
-	public var instantSound:Null<Sound>;
-	public var skippableDefault:Bool;
-	#elseif stencyl
 	private var style:dialog.ds.ext.SkipScripts;
-	#end
 
 	public function new()
 	{
 		super();
-
-		#if unity
-		style = this;
-		#end
 	}
 
 	override public function setup(dg:DialogBox, style:Dynamic)
@@ -85,10 +53,8 @@ class SkipScripts extends dialog.core.DialogExtension
 			msgSkippable = style.skippableDefault;
 			typingScript = cast(dg.getExt("Typing Scripts"), TypingScripts);
 
-			#if stencyl
 			fastSound = style.fastSound;
 			zoomSound = style.zoomSound;
-			#end
 		});
 		addCallback(Dialog.ALWAYS, function():Void
 		{

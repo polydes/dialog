@@ -3,12 +3,6 @@ package dialog.core;
 import dialog.ds.*;
 import dialog.ext.*;
 
-#if unity
-
-import hugs.HUGSWrapper.NativeArrayIterator;
-
-#end
-
 class DialogStyle
 {
 	public var style:Style;
@@ -40,8 +34,6 @@ class DialogStyle
 
 		var curExt:dialog.core.DialogExtension;
 
-		#if stencyl
-
 		for(extTemplate in style.extensions)
 		{
 			curExt = Type.createInstance(Type.resolveClass(extTemplate.implementation), []);
@@ -49,18 +41,6 @@ class DialogStyle
 			extensions.push(curExt);
 			extensionMap.set(curExt.name, curExt);
 		}
-
-		#elseif unity
-
-		extensions = style.extensions;
-
-		for(ext in extensions)
-		{
-			ext.setup(dg, null);
-			extensionMap.set(ext.name, ext);
-		}
-
-		#end
 		
 		cmds = new Map<String, Dynamic>();
 		for(curExtension in this.extensions)

@@ -1,7 +1,5 @@
 package dialog.core;
 
-#if stencyl
-
 import com.stencyl.models.actor.ActorType;
 import com.stencyl.models.actor.Sprite;
 import com.stencyl.models.Font;
@@ -16,14 +14,6 @@ import nme.geom.Point;
 
 using dialog.util.BitmapDataUtil;
 
-#elseif unity
-
-import unityengine.*;
-import dialog.unity.compat.Engine;
-import dialog.unity.compat.Typedefs;
-
-#end
-
 import dialog.ds.*;
 import dialog.geom.*;
 
@@ -33,15 +23,7 @@ class Util
 	{
 		var o:Sound = null;
 
-		#if stencyl
-
 		o = cast Data.get().resourceMap.get(name);
-
-		#elseif unity
-
-		o = cast untyped __cs__("global::UnityEngine.Resources.Load<global::UnityEngine.AudioClip>(name)");
-
-		#end
 
 		if(o == null)
 		{
@@ -55,15 +37,7 @@ class Util
 	{
 		var o:Font = null;
 
-		#if stencyl
-
 		o = cast Data.get().resourceMap.get(name);
-
-		#elseif unity
-
-		o = cast untyped __cs__("global::UnityEngine.Resources.Load<global::UnityEngine.Font>(name)");
-
-		#end
 
 		if(o == null)
 		{
@@ -77,15 +51,7 @@ class Util
 	{
 		var o:BitmapData = null;
 
-		#if stencyl
-
 		o = Assets.getBitmapData("assets/data/com.polydes.dialog/images/"+ name +".png");
-
-		#elseif unity
-
-		o = cast untyped __cs__("global::UnityEngine.Resources.Load<global::UnityEngine.Texture2D>(name)");
-
-		#end
 
 		if(o == null)
 		{
@@ -99,8 +65,6 @@ class Util
 	{
 		var o:BitmapData = null;
 
-		#if stencyl
-
 		if(Engine.IMG_BASE == "1x")
 			o = Assets.getBitmapData("assets/data/com.polydes.dialog/images/"+ name +".png");
 		else
@@ -110,12 +74,6 @@ class Util
 				toReturn = Assets.getBitmapData("assets/data/com.polydes.dialog/images/"+ name +".png").getScaled(Engine.SCALE, Engine.SCALE);
 			o = toReturn;
 		}
-
-		#elseif unity
-
-		o = cast untyped __cs__("global::UnityEngine.Resources.Load<global::UnityEngine.Texture2D>(name)");
-
-		#end
 
 		if(o == null)
 		{
@@ -129,23 +87,11 @@ class Util
 	{
 		var o:String = null;
 
-		#if stencyl
-
 		o = Assets.getText("assets/data/com.polydes.dialog/"+ name);
 		if(o == null)
 			trace("Failed to load Resource: " + name);
 		else
 			o = convertFromPseudoUnicode(o);
-
-		#elseif unity
-
-		var asset:TextAsset = Resources.Load(name);
-		if(asset == null)
-			trace("Failed to load Resource: " + name);
-		else
-			o = asset.ToString();
-		
-		#end
 
 		return o;
 	}
