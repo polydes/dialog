@@ -4,8 +4,8 @@ import com.stencyl.behavior.Script;
 import com.stencyl.models.Sound;
 import com.stencyl.Input;
 
-import nme.display.BitmapData;
-import nme.geom.Point;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
 
 import dialog.core.*;
 import dialog.ds.*;

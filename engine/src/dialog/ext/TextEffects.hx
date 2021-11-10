@@ -1,7 +1,7 @@
 package dialog.ext;
 
-import nme.display.BitmapData;
-import nme.geom.Point;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
 
 import dialog.core.*;
 

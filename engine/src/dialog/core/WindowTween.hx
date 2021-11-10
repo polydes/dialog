@@ -2,9 +2,9 @@ package dialog.core;
 
 import com.stencyl.Engine;
 
-import nme.display.BitmapData;
+import openfl.display.BitmapData;
 
-import nme.geom.Point;
+import openfl.geom.Point;
 
 import dialog.ds.*;
 import dialog.geom.*;

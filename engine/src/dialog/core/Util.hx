@@ -8,9 +8,9 @@ import com.stencyl.models.Sound;
 import com.stencyl.Data;
 import com.stencyl.Engine;
 
-import nme.Assets;
-import nme.display.BitmapData;
-import nme.geom.Point;
+import openfl.Assets;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
 
 using dialog.util.BitmapDataUtil;
 

@@ -1,7 +1,7 @@
 package dialog.util;
 
-import nme.display.*;
-import nme.geom.*;
+import openfl.display.*;
+import openfl.geom.*;
 
 import com.stencyl.graphics.G;
 import com.stencyl.models.actor.ActorType;

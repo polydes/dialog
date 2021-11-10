@@ -1,6 +1,6 @@
 package dialog.core;
 
-import nme.display.BitmapData;
+import openfl.display.BitmapData;
 
 import dialog.ds.*;
 

@@ -2,8 +2,8 @@ package dialog.core;
 
 import com.stencyl.Engine;
 
-import nme.display.BitmapData;
-import nme.geom.ColorTransform;
+import openfl.display.BitmapData;
+import openfl.geom.ColorTransform;
 
 import dialog.ds.*;
 import dialog.geom.*;

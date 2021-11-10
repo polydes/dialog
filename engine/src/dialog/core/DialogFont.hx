@@ -2,9 +2,9 @@ package dialog.core;
 
 import com.stencyl.models.Font;
 
-import nme.display.BitmapData;
-import nme.geom.ColorTransform;
-import nme.geom.Point;
+import openfl.display.BitmapData;
+import openfl.geom.ColorTransform;
+import openfl.geom.Point;
 
 using dialog.util.BitmapDataUtil;
 

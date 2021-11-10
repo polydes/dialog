@@ -3,8 +3,8 @@ package dialog.ext;
 import com.stencyl.models.Font;
 import com.stencyl.Engine;
 
-import nme.display.BitmapData;
-import nme.geom.Point;
+import openfl.display.BitmapData;
+import openfl.geom.Point;
 
 import dialog.core.*;
 import dialog.ds.*;
