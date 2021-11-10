@@ -258,7 +258,7 @@ class DialogOptions extends dialog.core.DialogExtension
 
 		var snd:Sound = style.appearSound;
 		if(snd != null)
-			Script.playSound(snd);
+			SoundManager.playSound(snd);
 	}
 
 	public function setCoords():Void
@@ -305,7 +305,7 @@ class DialogOptions extends dialog.core.DialogExtension
 
 		var snd:Sound = style.changeSound;
 		if(snd != null)
-			Script.playSound(snd);
+			SoundManager.playSound(snd);
 	}
 
 	private function tweenSelection():Void
@@ -340,7 +340,7 @@ class DialogOptions extends dialog.core.DialogExtension
 
 		var snd:Sound = style.confirmSound;
 		if(snd != null)
-			Script.playSound(snd);
+			SoundManager.playSound(snd);
 
 		window.tweenCompleteNotify.push(function():Void
 		{

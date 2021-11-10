@@ -82,7 +82,7 @@ class FlowScripts extends dialog.core.DialogExtension
 						waitElapsed = 0;
 						var snd:Sound = style.waitingSound;
 						if(snd != null)
-							Script.playSound(snd);
+							SoundManager.playSound(snd);
 					}
 				}
 
@@ -103,7 +103,7 @@ class FlowScripts extends dialog.core.DialogExtension
 					{
 						var snd:Sound = style.inputSound;
 						if(snd != null)
-							Script.playSound(snd);
+							SoundManager.playSound(snd);
 					}
 				}
 			}
@@ -156,7 +156,7 @@ class FlowScripts extends dialog.core.DialogExtension
 		{
 			var snd:Sound = style.waitingSound;
 			if(snd != null)
-				Script.playSound(snd);
+				SoundManager.playSound(snd);
 		}
 	}
 

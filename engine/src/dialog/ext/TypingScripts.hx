@@ -57,7 +57,7 @@ class TypingScripts extends dialog.core.DialogExtension
 					typeSound = typeSoundArray[Std.random(typeSoundArray.length)];
 				if(typeSound != null && curSoundDelay-- == 0)
 				{
-					Script.playSound(typeSound);
+					SoundManager.playSound(typeSound);
 					curSoundDelay = typeSoundDelay;
 				}
 			}

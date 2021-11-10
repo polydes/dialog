@@ -70,7 +70,7 @@ class SkipScripts extends dialog.core.DialogExtension
 				{
 					var snd:Sound = style.instantSound;
 					if(snd != null)
-						Script.playSound(snd);
+						SoundManager.playSound(snd);
 				}
 				if(Input.check(style.instantButton))
 				{
@@ -100,7 +100,7 @@ class SkipScripts extends dialog.core.DialogExtension
 							soundTimer = 0;
 							var snd:Sound = randomSound(zoomSound);
 							if(snd != null)
-								Script.playSound(snd);
+								SoundManager.playSound(snd);
 						}
 					}
 					else
@@ -130,7 +130,7 @@ class SkipScripts extends dialog.core.DialogExtension
 							soundTimer = 0;
 							var snd:Sound = randomSound(fastSound);
 							if(snd != null)
-								Script.playSound(snd);
+								SoundManager.playSound(snd);
 						}
 					}
 					else

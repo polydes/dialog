@@ -70,7 +70,7 @@ class DialogBase extends dialog.core.DialogExtension
 				messageBegan = true;
 				var snd:Sound = style.msgStartSound;
 				if(snd != null)
-					Script.playSound(snd);
+					SoundManager.playSound(snd);
 			}
 
 			Script.setGameAttribute(style.controlAttribute, true);
@@ -135,7 +135,7 @@ class DialogBase extends dialog.core.DialogExtension
 
 		var snd:Sound = style.endSound;
 		if(snd != null)
-			Script.playSound(snd);
+			SoundManager.playSound(snd);
 
 		if(window != null)
 		{
@@ -156,7 +156,7 @@ class DialogBase extends dialog.core.DialogExtension
 		dg.clearMessage();
 		var snd:Sound = style.clearSound;
 		if(snd != null)
-			Script.playSound(snd);
+			SoundManager.playSound(snd);
 	}
 
 	public function close():Void
@@ -164,7 +164,7 @@ class DialogBase extends dialog.core.DialogExtension
 		dg.closeMessage();
 		var snd:Sound = style.closeSound;
 		if(snd != null)
-			Script.playSound(snd);
+			SoundManager.playSound(snd);
 	}
 
 	public function dgGo(toCall:String):Void
