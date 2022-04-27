@@ -1,44 +1,34 @@
-## How to Install/Update
++++
+title = "Getting Started"
++++
 
-This extension is made of **three parts**:
+## Initial Setup
 
-1. The Dialog Toolset Extension. This allows dialog to be written within the Stencyl interface.
-2. The Data Structures Extension. This is used as a backend to provide a user-friendly interface for editing dialog settings.
-3. The Dialog Engine Extension. This provides the code for drawing and executing your dialog scripts at runtime.
+See the [installation guide](../../install) for intructions to install and enable the extension.
 
-The easiest way to install is to use Stencyl's built-in Extension Manager to install them all together.
+For easier initial setup, you can copy all of the settings of "Dialog Extension Sample" to your game.
 
-1) Extensions > Get Extensions
+1. Download [Dialog Extension Sample](/3.4.0-extensions/sample-games/dialog-extension-sample.stencyl) and import it into Stencyl.
 
-![](img1.png)  
+2. Open your workspace (`stencylworks/`) from within Stencyl by going to **Tools > View Folder > Workspace**
 
-2) Enable external repositories and add "http://www.polydes.com/repo"
+3. With your game closed, copy the content of `stencylworks/games/Dialog Extension Sample/extras` into `stencylworks/games/[Your Game]/extras`
+   ```
+   stencylworks
+   └─games
+     ├─Dialog Extension Sample
+     │ └─extras               ───┐
+     └─{your own game}           │copy
+       └─extras              <───┘
+   ```
 
-![](img2.png)  
+4. Open your game in Stencyl.
 
-3) Install "Dialog Extension"
-
-![](img3.png)  
-
-## How to Enable the Extension in Your Game
-
-1) Open a game and select "Dialog Extension" in the sidebar
-
-![](img4.png)  
-
-2) Click in the center panel to enable it for that game
-
-![](img5.png)  
-
-##### Optional Step:
-
-For easier initial setup, you can copy all of the settings of the "Dialog Extension Sample" to your game.
-
-1. Import "Dialog Extension Sample" into your Stencyl workspace.
-2. Copy the content of `[Your Stencyl Workspace]/games/Dialog Extension Sample/extras` into `[Your Stencyl Workspace]/games/[Your Game]/extras`
-
-This brings most of the settings of the sample game into yours, with a few exceptions:
-- Sounds, the "pointer" Actor Type, and controls need to be set to resources in your Stencyl game.
+> ⚠ **Warning**:
+> This brings most of the settings of the sample game into yours, with a few exceptions. These need to be set to resources in your Stencyl game:
+> - Sounds
+> - The "pointer" Actor Type
+> - Controls
 
 ## Using the Extension
 
@@ -66,11 +56,13 @@ The following blocks use the name of a dialog script to start dialog.
 
 There are four alternate blocks, `show text [ ... ] ...` which you can use to call a dialog with text from an attribute.
 
-```example
-//You can place text directly into the block, and it will be converted into a dialog script.//
+```dialog
+// You can place text directly into the block,         //
+// and it will be converted into a dialog script.      //
 show text [Hi Lenny!<but> What's up?<but><end>]
 
-//You can also store the text into an attribute, and place the attribute into the "show text" block.//
+// You can also store the text into an attribute,      //
+// and place the attribute into the "show text" block. //
 set My Dialog Attribute to [Hi Lenny!<but> What's up?<but><end>]
 show text [My Dialog Attribute]
 ```
@@ -82,4 +74,4 @@ The setting for this is in `Data Structures > Default Style > Basic Settings > C
 
 It's a good idea to install the included "Dialog Extension Sample" and see how it works. Look through the settings for the Dialog Extension and Data Structures, and you can see how dialog is shown in the events for "Good Scene."
 
-See the [command reference](index.php?f=command_reference) for information on using the Dialog Extension's scripting capabilities.
+See the [command reference](../../reference/command_reference) for information on using the Dialog Extension's scripting capabilities.
