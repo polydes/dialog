@@ -1,15 +1,10 @@
 package com.polydes.dialog.data.def.elements;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.w3c.dom.Element;
 
 import com.polydes.common.io.XML;
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.ui.propsheet.PropertiesSheetStyle;
-import com.polydes.common.util.Lang;
 import com.polydes.datastruct.data.structure.SDE;
 import com.polydes.datastruct.data.structure.SDEType;
 import com.polydes.datastruct.data.structure.StructureDefinition;
@@ -18,6 +13,14 @@ import com.polydes.datastruct.ui.table.Card;
 import com.polydes.datastruct.ui.table.GuiObject;
 import com.polydes.datastruct.ui.table.PropertiesSheet;
 import com.polydes.datastruct.ui.table.RowGroup;
+
+import stencyl.core.api.datatypes.DataContext;
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.datatypes.Types;
+import stencyl.core.util.Lang;
+import stencyl.toolset.comp.datatypes.string.ExpandingStringEditor;
+import stencyl.toolset.comp.propsheet.PropertiesSheetStyle;
 
 public class StructureExtension extends SDE
 {
@@ -44,9 +47,9 @@ public class StructureExtension extends SDE
 			
 			sheet.build()
 			
-				.field("implementation")._string().add()
+				.field("implementation")._editor(Types._String).add()
 				
-				.field("description")._string().expandingEditor().add()
+				.field("description")._editor(ExpandingStringEditor.BUILDER).add()
 				.onUpdate(() -> preview.lightRefreshLeaf(previewKey))
 				
 				.finish();
@@ -95,7 +98,7 @@ public class StructureExtension extends SDE
 		}
 
 		@Override
-		public void write(StructureExtension object, Element e)
+		public void write(StructureExtension object, Element e, DataContext ctx)
 		{
 			e.setAttribute("implementation", object.implementation);
 			e.setAttribute("desc", object.description);

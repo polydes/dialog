@@ -1,19 +1,9 @@
 package com.polydes.dialog.app;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 import com.polydes.common.res.ResourceLoader;
 import com.polydes.common.res.Resources;
@@ -22,7 +12,7 @@ import com.polydes.dialog.app.pages.DialogPage;
 import com.polydes.dialog.app.pages.MacrosPage;
 import com.polydes.dialog.app.pages.PluginsPage;
 
-import stencyl.sw.lnf.Theme;
+import stencyl.toolset.app.lnf.Theme;
 
 public class MainEditor extends JPanel
 {

@@ -1,11 +1,10 @@
 package com.polydes.dialog.app;
 
-import java.awt.Color;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import stencyl.sw.util.comp.GradientPanel;
+import stencyl.toolset.comp.GradientPanel;
 
 public class StatusBar
 {

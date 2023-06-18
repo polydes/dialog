@@ -1,17 +1,19 @@
 package com.polydes.dialog.data.def.elements;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.w3c.dom.Element;
 
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.util.Lang;
 import com.polydes.datastruct.data.structure.SDE;
 import com.polydes.datastruct.data.structure.SDEType;
 import com.polydes.datastruct.data.structure.StructureDefinition;
 import com.polydes.datastruct.ui.table.GuiObject;
 import com.polydes.datastruct.ui.table.PropertiesSheet;
+
+import stencyl.core.api.datatypes.DataContext;
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.util.Lang;
 
 public class StructureDrawkeys extends SDE
 {
@@ -57,7 +59,7 @@ public class StructureDrawkeys extends SDE
 		}
 
 		@Override
-		public void write(StructureDrawkeys object, Element e)
+		public void write(StructureDrawkeys object, Element e, DataContext ctx)
 		{
 		}
 

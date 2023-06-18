@@ -3,17 +3,18 @@ package com.polydes.dialog.data.stores;
 import java.io.File;
 import java.util.ArrayList;
 
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.nodes.HierarchyModel;
 import com.polydes.dialog.data.TextSource;
 import com.polydes.dialog.io.Text;
+
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.toolset.api.nodes.HierarchyModel;
 
 public class Macros extends TextStore
 {
 	private static Macros _instance;
 	
-	private HierarchyModel<DefaultLeaf,DefaultBranch> folderModel;
+	private HierarchyModel<DefaultLeaf, DefaultBranch> folderModel;
 	
 	private Macros()
 	{

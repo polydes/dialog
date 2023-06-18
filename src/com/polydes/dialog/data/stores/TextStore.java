@@ -2,7 +2,7 @@ package com.polydes.dialog.data.stores;
 
 import java.io.File;
 
-import com.polydes.common.nodes.DefaultViewableBranch;
+import com.polydes.datastruct.nodes.DefaultViewableBranch;
 
 public abstract class TextStore extends DefaultViewableBranch
 {

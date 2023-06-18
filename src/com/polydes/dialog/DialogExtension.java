@@ -3,19 +3,18 @@ package com.polydes.dialog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.polydes.common.data.types.Types;
 import com.polydes.common.ext.ExtensionInterface;
 import com.polydes.common.res.ResourceLoader;
 import com.polydes.common.res.Resources;
-import com.polydes.common.util.Lang;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.structure.SDEType;
 import com.polydes.datastruct.data.structure.SDETypes;
@@ -23,6 +22,7 @@ import com.polydes.datastruct.data.structure.elements.StructureTab;
 import com.polydes.datastruct.data.types.HaxeDataType;
 import com.polydes.datastruct.ext.HaxeDataTypeExtension;
 import com.polydes.dialog.app.MainEditor;
+import com.polydes.dialog.data.DgTypes;
 import com.polydes.dialog.data.def.elements.StructureCommand.CommandType;
 import com.polydes.dialog.data.def.elements.StructureCommands.CommandsType;
 import com.polydes.dialog.data.def.elements.StructureDrawkey.DrawkeyType;
@@ -35,13 +35,15 @@ import com.polydes.dialog.updates.DS_V4_FullTypeNamesUpdate;
 import com.polydes.dialog.updates.V5_GameExtensionUpdate;
 import com.polydes.dialog.updates.V6_ExtensionSubmodules;
 
+import stencyl.core.api.datatypes.DataContext;
+import stencyl.core.api.fs.Locations;
+import stencyl.core.datatypes.Types;
+import stencyl.core.io.FileHelper;
 import stencyl.core.lib.Game;
-import stencyl.sw.SW;
+import stencyl.core.util.Lang;
+import stencyl.sw.app.ExtensionManager.FormatUpdateSubmitter;
 import stencyl.sw.ext.GameExtension;
 import stencyl.sw.ext.OptionsPanel;
-import stencyl.sw.util.FileHelper;
-import stencyl.sw.util.Locations;
-import stencyl.sw.util.WorkerPriorityQueue;
 
 public class DialogExtension extends GameExtension
 {
@@ -106,17 +108,17 @@ public class DialogExtension extends GameExtension
 	}
 	
 	@Override
-	public void onInstalledForGame()
+	public void onInstalledForGame(FormatUpdateSubmitter updateQueue)
 	{
 		if(detectOldInstall())
-			updateFromVersion(4, SW.get().getExtensionManager().getExtensionFormatUpdates());
+			updateFromVersion(4, updateQueue);
 		else
 			loadDefaults();
 	}
 	
 	private boolean detectOldInstall()
 	{
-		return new File(Locations.getGameLocation(getGame()) + "extras/[ext] dialog").exists();
+		return getGame().files.getFile("extras", "[ext] dialog").exists();
 	}
 	
 	@Override
@@ -127,10 +129,10 @@ public class DialogExtension extends GameExtension
 	}
 	
 	@Override
-	public void updateFromVersion(int fromVersion, WorkerPriorityQueue updateQueue)
+	public void updateFromVersion(int fromVersion, FormatUpdateSubmitter updateQueue)
 	{
 		if(fromVersion < 5)
-			updateQueue.add(new V5_GameExtensionUpdate());
+			updateQueue.add(new V5_GameExtensionUpdate(getGame()));
 		if(fromVersion < 6)
 		{
 			updateQueue
@@ -199,8 +201,11 @@ public class DialogExtension extends GameExtension
 			for(SDEType<?> sdet : sdeTypes)
 				dse.getSdeTypes().registerItem(getManifest().id, sdet);
 			SDETypes.fromClass(StructureTab.class).childTypes.add(StructureExtension.class);
+			DgTypes.registerTypes();
 			
-			types = HaxeDataTypeExtension.readTypesFolder(new File(Locations.getGameExtensionLocation("com.polydes.dialog"), "types"));
+			DataContext ctx = DataContext.fromMap(Map.of("Project", getGame()));
+			
+			types = HaxeDataTypeExtension.readTypesFolder(new File(Locations.getGameExtensionLocation("com.polydes.dialog"), "types"), ctx);
 			for(HaxeDataType type : types)
 				dse.getHaxeTypes().registerItem(type);
 			
@@ -225,7 +230,8 @@ public class DialogExtension extends GameExtension
 	public void onGameWithDataClosed()
 	{
 		for(HaxeDataType type : types)
-			Types.get().unregisterItem(type.dataType);
+			Types.get().unloadReference(type.dataType);
+		DgTypes.unregisterTypes();
 		
 		SDETypes.fromClass(StructureTab.class).childTypes.remove(StructureExtension.class);
 		

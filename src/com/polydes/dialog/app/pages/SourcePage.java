@@ -1,26 +1,26 @@
 package com.polydes.dialog.app.pages;
 
-import static com.polydes.common.util.Lang.arraylist;
-
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JPanel;
-import javax.swing.JSplitPane;
+import javax.swing.*;
 
-import com.polydes.common.comp.MiniSplitPane;
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultEditableLeaf;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.nodes.DefaultViewableBranch;
-import com.polydes.common.nodes.HierarchyModel;
-import com.polydes.common.nodes.NodeCreator;
-import com.polydes.common.ui.darktree.DarkTree;
-import com.polydes.common.ui.filelist.TreePage;
+import com.polydes.datastruct.nodes.DefaultEditableLeaf;
+import com.polydes.datastruct.nodes.DefaultViewableBranch;
+import com.polydes.datastruct.nodes.DefaultViewableBranch.DefaultViewableNodeUIProvider;
+import com.polydes.dialog.app.MiniSplitPane;
 import com.polydes.dialog.data.TextSource;
 
-public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements NodeCreator<DefaultLeaf,DefaultBranch>
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.util.Lang;
+import stencyl.toolset.api.nodes.HierarchyModel;
+import stencyl.toolset.api.nodes.NodeCreator;
+import stencyl.toolset.comp.darktree.DarkTree;
+import stencyl.toolset.comp.filelist.TreePage;
+
+public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements NodeCreator<DefaultLeaf, DefaultBranch>
 {
 	TreePage<DefaultLeaf,DefaultBranch> treePage;
 	MiniSplitPane splitPane;
@@ -28,7 +28,7 @@ public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements
 	public SourcePage(HierarchyModel<DefaultLeaf,DefaultBranch> model)
 	{
 		super(new BorderLayout());
-		treePage = new TreePage<>(model);
+		treePage = new TreePage<>(model, new DefaultViewableNodeUIProvider<>());
 		model.setNodeCreator(this);
 		
 		add(splitPane = new MiniSplitPane(), BorderLayout.CENTER);
@@ -43,7 +43,7 @@ public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements
 	 | Tree Node Creator
 	\*================================================*/
 	
-	private ArrayList<CreatableNodeInfo> creatableNodeList = arraylist(new CreatableNodeInfo("Dialog Chunk", null, null));
+	private ArrayList<CreatableNodeInfo> creatableNodeList = Lang.arraylist(new CreatableNodeInfo("Dialog Chunk", null, null));
 	
 	@Override
 	public ArrayList<CreatableNodeInfo> getCreatableNodeList(DefaultBranch branchNode)

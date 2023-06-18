@@ -2,10 +2,10 @@ package com.polydes.dialog.data;
 
 import java.util.ArrayList;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
-import com.polydes.common.nodes.DefaultEditableLeaf;
-import com.polydes.common.ui.object.EditableObject;
+import com.polydes.datastruct.nodes.DefaultEditableLeaf;
+import com.polydes.datastruct.ui.object.EditableObject;
 import com.polydes.dialog.app.editors.text.BasicHighlighter;
 import com.polydes.dialog.app.editors.text.DialogHighlighter;
 import com.polydes.dialog.app.editors.text.Highlighter;
@@ -58,6 +58,12 @@ public class TextSource extends DefaultEditableLeaf
 		public void disposeEditor()
 		{
 			
+		}
+
+		@Override
+		public ImageIcon getIcon()
+		{
+			return null;
 		}
 	}
 	

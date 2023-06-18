@@ -1,36 +1,23 @@
 package com.polydes.dialog.app.pages;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.polydes.common.comp.HorizontalDivider;
-import com.polydes.common.comp.TitledPanel;
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultEditableLeaf;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.nodes.DefaultNodeCreator;
-import com.polydes.common.nodes.HierarchyModel;
-import com.polydes.common.nodes.NodeCreator.CreatableNodeInfo;
-import com.polydes.common.nodes.NodeCreator.NodeAction;
-import com.polydes.common.nodes.NodeSelection;
-import com.polydes.common.nodes.NodeUtils;
 import com.polydes.common.res.ResourceLoader;
 import com.polydes.common.res.Resources;
 import com.polydes.common.sw.Snippets;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.folder.Folder;
 import com.polydes.datastruct.data.structure.StructureDefinition;
+import com.polydes.datastruct.nodes.DefaultEditableLeaf;
 import com.polydes.datastruct.ui.page.CreateStructureDefinitionDialog;
 import com.polydes.datastruct.ui.page.StructureDefinitionPage;
 import com.polydes.datastruct.ui.page.StructureDefinitionsWindow;
@@ -39,12 +26,23 @@ import com.polydes.dialog.app.PluginList;
 import com.polydes.dialog.app.editors.text.TextArea;
 import com.polydes.dialog.data.def.elements.StructureExtension;
 
+import stencyl.core.SWC;
+import stencyl.core.api.fs.Locations;
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.api.pnodes.NodeUtils;
 import stencyl.core.engine.snippet.ISnippet;
 import stencyl.core.lib.Game;
-import stencyl.sw.SW;
-import stencyl.sw.util.Locations;
-import stencyl.sw.util.UI;
-import stencyl.sw.util.dg.MessageDialog;
+import stencyl.sw.app.doc.Workspace;
+import stencyl.toolset.api.nodes.DefaultNodeCreator;
+import stencyl.toolset.api.nodes.HierarchyModel;
+import stencyl.toolset.api.nodes.NodeCreator.CreatableNodeInfo;
+import stencyl.toolset.api.nodes.NodeCreator.NodeAction;
+import stencyl.toolset.api.nodes.select.NodeSelection;
+import stencyl.toolset.comp.HorizontalDivider;
+import stencyl.toolset.comp.TitledPanel;
+import stencyl.toolset.comp.UI;
+import stencyl.toolset.comp.dg.MessageDialog;
 
 public class PluginsPage extends JPanel
 {
@@ -54,7 +52,7 @@ public class PluginsPage extends JPanel
 	
 	private static PluginsPage _instance;
 	
-	private HierarchyModel<DefaultLeaf,DefaultBranch> dialogDefsFM;
+	private HierarchyModel<DefaultLeaf, DefaultBranch> dialogDefsFM;
 	private HierarchyModel<DefaultLeaf,DefaultBranch> userDefsFM;
 	
 	private PluginList dialogDefsList;
@@ -79,7 +77,7 @@ public class PluginsPage extends JPanel
 				ISnippet toEdit = Game.getGame().getSnippetByClassname(implementingClass);
 				if(toEdit == null)
 					MessageDialog.showErrorDialog("No implementation", "Couldn't find behavior with classname \"" + implementingClass + "\".");
-				SW.get().getWorkspace().openResource(toEdit, false);
+				SWC.get(Workspace.class).openResource(toEdit, false);
 			}
 		});
 	});
@@ -137,7 +135,7 @@ public class PluginsPage extends JPanel
 			@Override
 			public DefaultLeaf createNode(CreatableNodeInfo selected, String nodeName)
 			{
-				CreateStructureDefinitionDialog dg = new CreateStructureDefinitionDialog();
+				CreateStructureDefinitionDialog dg = new CreateStructureDefinitionDialog(Game.getGame());
 				dg.setParentClass((StructureDefinition) dialogDefsRoot.getItemByName("Dialog Extension").getUserData());
 				dg.setNodeName("New Plugin");
 				StructureDefinition toCreate = dg.newDef;

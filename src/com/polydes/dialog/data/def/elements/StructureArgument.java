@@ -1,17 +1,17 @@
 package com.polydes.dialog.data.def.elements;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import com.polydes.common.comp.EnumEditor;
-import com.polydes.common.data.types.DataEditor;
-import com.polydes.common.data.types.DataEditorBuilder;
-import com.polydes.common.data.types.DataType;
-import com.polydes.common.data.types.EditorProperties;
-import com.polydes.common.data.types.builtin.basic.StringType;
-import com.polydes.common.ui.propsheet.PropertiesSheetStyle;
+import stencyl.core.api.datatypes.DataContext;
+import stencyl.core.api.datatypes.DataType;
+import stencyl.core.api.datatypes.properties.DataTypeProperties;
+import stencyl.toolset.api.datatypes.DataEditor;
+import stencyl.toolset.comp.datatypes.enumprim.EnumEditor;
+import stencyl.toolset.comp.datatypes.string.SingleLineStringEditor;
+import stencyl.toolset.comp.propsheet.PropertiesSheetStyle;
 
 public class StructureArgument
 {
@@ -59,23 +59,11 @@ public class StructureArgument
 	{
 		public StructureArgumentType()
 		{
-			super(StructureArgument.class);
+			super(StructureArgument.class, "structure-argument");
 		}
 
 		@Override
-		public DataEditor<StructureArgument> createEditor(EditorProperties properties, PropertiesSheetStyle style)
-		{
-			return new StructureArgumentEditor(style);
-		}
-
-		@Override
-		public DataEditorBuilder createEditorBuilder()
-		{
-			return new DataEditorBuilder(this, new EditorProperties());
-		}
-
-		@Override
-		public StructureArgument decode(String s)
+		public StructureArgument decode(String s, DataContext ctx)
 		{
 			if(s == null || !s.contains(":"))
 				return new StructureArgument("", Type.String);
@@ -86,7 +74,7 @@ public class StructureArgument
 		}
 
 		@Override
-		public String encode(StructureArgument t)
+		public String encode(StructureArgument t, DataContext ctx)
 		{
 			return t.name + ":" + t.type;
 		}
@@ -94,7 +82,7 @@ public class StructureArgument
 		@Override
 		public String toDisplayString(StructureArgument data)
 		{
-			return encode(data);
+			return encode(data, DataContext.NO_CONTEXT);
 		}
 		
 		@Override
@@ -113,9 +101,9 @@ public class StructureArgument
 		
 		final JComponent[] comps;
 		
-		public StructureArgumentEditor(PropertiesSheetStyle style)
+		public StructureArgumentEditor(DataTypeProperties props, PropertiesSheetStyle style)
 		{
-			nameEditor = new StringType.SingleLineStringEditor(new EditorProperties(), style);
+			nameEditor = new SingleLineStringEditor(new DataTypeProperties(), style);
 			nameEditor.addListener(() -> updated());
 			
 			typeEditor = new EnumEditor<Type>(Type.class);

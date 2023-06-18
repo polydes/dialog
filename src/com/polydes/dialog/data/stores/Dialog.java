@@ -2,21 +2,22 @@ package com.polydes.dialog.data.stores;
 
 import java.io.File;
 
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.nodes.DefaultViewableBranch;
-import com.polydes.common.nodes.HierarchyModel;
+import com.polydes.datastruct.nodes.DefaultViewableBranch;
 import com.polydes.dialog.data.TextSource;
 import com.polydes.dialog.io.Text;
 import com.polydes.dialog.io.Text.TextFolder;
 import com.polydes.dialog.io.Text.TextObject;
 import com.polydes.dialog.io.Text.TextSection;
 
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.toolset.api.nodes.HierarchyModel;
+
 public class Dialog extends TextStore
 {
 	private static Dialog _instance;
 	
-	private HierarchyModel<DefaultLeaf,DefaultBranch> folderModel;
+	private HierarchyModel<DefaultLeaf, DefaultBranch> folderModel;
 	
 	private Dialog()
 	{

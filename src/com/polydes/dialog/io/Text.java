@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharUtils;
 import org.apache.log4j.Logger;
 
 public class Text
@@ -53,37 +52,6 @@ public class Text
 		}
 		
 		return text;
-	}
-	
-	private static String convertToPseudoUnicode(String text)
-	{
-		StringBuilder sb = new StringBuilder();
-		int index = 0;
-		while(index < text.length())
-		{
-			char ch = text.charAt(index);
-			if(CharUtils.isAscii(ch))
-			{
-				sb.append(ch);
-				index += 1;
-			}
-			else
-			{
-				sb.append("~x").append(hex(text.codePointAt(index), 4));
-				index += 1;
-				//TODO: doesn't handle surrogate chars
-			}
-		}
-		
-		return sb.toString();
-	}
-	
-	public static String hex(int i, int places)
-	{
-		String s = Integer.toHexString(i);
-		while(s.length() < places)
-			s = "0" + s;
-		return s;
 	}
 	
 	public static List<String> readLines(File file)
@@ -217,12 +185,7 @@ public class Text
 	{
 		try
 		{
-			List<String> outLines = new ArrayList<>(lines);
-			for(int i = 0; i < lines.size(); ++i)
-			{
-				outLines.set(i, convertToPseudoUnicode(outLines.get(i)));
-			}
-			FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), outLines, "\n");
+			FileUtils.writeLines(file, StandardCharsets.UTF_8.name(), lines, "\n");
 		}
 		catch (IOException e)
 		{
@@ -249,7 +212,7 @@ public class Text
 	{
 		try
 		{
-			writers.get(file).write(convertToPseudoUnicode(s) + "\n");
+			writers.get(file).write(s + "\n");
 		}
 		catch (IOException e)
 		{

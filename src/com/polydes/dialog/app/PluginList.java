@@ -1,37 +1,34 @@
 package com.polydes.dialog.app;
-import static com.polydes.common.util.Lang.asArray;
 
-import java.awt.Dimension;
-import java.awt.MouseInfo;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
-import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.nodes.HierarchyModel;
-import com.polydes.common.nodes.HierarchyRepresentation;
-import com.polydes.common.nodes.NodeCreator.CreatableNodeInfo;
-import com.polydes.common.nodes.NodeCreator.NodeAction;
-import com.polydes.common.nodes.NodeUtils;
-import com.polydes.common.ui.filelist.JListPopupAdapter;
-import com.polydes.common.ui.filelist.LeafList.LeafRenderer;
-import com.polydes.common.util.PopupUtil;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.structure.StructureDefinition;
 import com.polydes.datastruct.data.structure.StructureDefinitions;
+import com.polydes.datastruct.nodes.DefaultViewableBranch.DefaultViewableNodeUIProvider;
 import com.polydes.dialog.app.pages.PluginsPage;
 
-public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresentation<DefaultLeaf,DefaultBranch>
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.api.pnodes.NodeUtils;
+import stencyl.toolset.api.nodes.HierarchyModel;
+import stencyl.toolset.api.nodes.HierarchyRepresentation;
+import stencyl.toolset.api.nodes.NodeCreator;
+import stencyl.toolset.api.nodes.NodeCreator.CreatableNodeInfo;
+import stencyl.toolset.api.nodes.NodeCreator.NodeAction;
+import stencyl.toolset.comp.filelist.JListPopupAdapter;
+import stencyl.toolset.comp.filelist.LeafList.LeafRenderer;
+import stencyl.toolset.comp.util.PopupUtil;
+
+import static stencyl.core.util.Lang.asArray;
+
+public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresentation<DefaultLeaf, DefaultBranch>
 {
 	HierarchyModel<DefaultLeaf,DefaultBranch> model;
 	ArrayList<DefaultLeaf> defs;
@@ -44,7 +41,7 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 		listModel = (DefaultListModel<DefaultLeaf>) getModel();
 		
 		setBackground(null);
-		setCellRenderer(new LeafRenderer<DefaultLeaf,DefaultBranch>(60, 48, 24, 24));
+		setCellRenderer(new LeafRenderer<DefaultLeaf,DefaultBranch>(60, 48, 24, 24, new DefaultViewableNodeUIProvider<>()));
 		setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		setVisibleRowCount(-1);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -78,7 +75,7 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 					if(item instanceof NodeAction)
 						for(DefaultLeaf target : targets)
 							((NodeAction<DefaultLeaf>) item).callback.accept(target);
-					else if(item instanceof CreatableNodeInfo)
+					else if(item instanceof NodeCreator.CreatableNodeInfo)
 						model.createNewItem((CreatableNodeInfo) item);
 					
 				});

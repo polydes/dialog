@@ -1,9 +1,9 @@
 package com.polydes.dialog.updates;
 
-import com.polydes.common.util.Lang;
 import com.polydes.datastruct.DataStructuresExtension;
 
-import stencyl.sw.util.Worker;
+import stencyl.core.util.Lang;
+import stencyl.core.util.Worker;
 
 public class DS_V4_FullTypeNamesUpdate implements Worker
 {

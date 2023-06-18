@@ -1,9 +1,6 @@
 package com.polydes.dialog.app.editors.text;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
@@ -13,9 +10,7 @@ import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.BorderFactory;
-import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -27,9 +22,10 @@ import javax.swing.text.TabStop;
 
 import org.apache.log4j.Logger;
 
-import com.polydes.common.comp.TitledPanel;
-import com.polydes.common.nodes.Leaf;
 import com.polydes.dialog.data.TextSource;
+
+import stencyl.core.api.pnodes.Leaf;
+import stencyl.toolset.comp.TitledPanel;
 
 public class TextArea extends TitledPanel implements PropertyChangeListener
 {

@@ -12,16 +12,16 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.polydes.common.util.Lang;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.io.Text;
 
 import stencyl.core.engine.sound.ISoundClip;
+import stencyl.core.io.FileHelper;
 import stencyl.core.lib.Game;
-import stencyl.core.lib.Resource;
-import stencyl.sw.util.FileHelper;
-import stencyl.sw.util.Util;
-import stencyl.sw.util.Worker;
+import stencyl.core.lib.resource.Resource;
+import stencyl.core.util.Lang;
+import stencyl.core.util.ParsingHelper;
+import stencyl.core.util.Worker;
 
 public class V6_ExtensionSubmodules implements Worker
 {
@@ -50,7 +50,7 @@ public class V6_ExtensionSubmodules implements Worker
 		{
 			if(f.getName().endsWith(".txt"))
 				continue;
-			lastStructureID = Math.max(lastStructureID, Util.parseInt(Text.readKeyValues(f).get("struct_id"), -1));
+			lastStructureID = Math.max(lastStructureID, ParsingHelper.parseInt(Text.readKeyValues(f).get("struct_id"), -1));
 		}
 		
 		modifiedStructures = new ArrayList<>();
@@ -156,7 +156,7 @@ public class V6_ExtensionSubmodules implements Worker
 					(
 						Lang.arraylist(logic,ms,ss,db,ts,eg,cs,sks,fs,te,dop),
 						Integer.class,
-						(struct) -> Util.parseInt(((Structure) struct).get("struct_id"), -1)
+						(struct) -> ParsingHelper.parseInt(((Structure) struct).get("struct_id"), -1)
 					),
 					","
 				);

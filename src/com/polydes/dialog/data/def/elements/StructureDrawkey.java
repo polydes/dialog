@@ -1,14 +1,10 @@
 package com.polydes.dialog.data.def.elements;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.w3c.dom.Element;
 
 import com.polydes.common.io.XML;
-import com.polydes.common.nodes.DefaultBranch;
-import com.polydes.common.nodes.DefaultLeaf;
-import com.polydes.common.ui.propsheet.PropertiesSheetStyle;
 import com.polydes.datastruct.data.folder.Folder;
 import com.polydes.datastruct.data.structure.SDE;
 import com.polydes.datastruct.data.structure.SDEType;
@@ -19,43 +15,49 @@ import com.polydes.datastruct.ui.table.GuiObject;
 import com.polydes.datastruct.ui.table.PropertiesSheet;
 import com.polydes.datastruct.ui.table.RowGroup;
 
+import stencyl.core.api.datatypes.DataContext;
+import stencyl.core.api.pnodes.DefaultBranch;
+import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.datatypes.Types;
+import stencyl.toolset.comp.propsheet.PropertiesSheetStyle;
+
 public class StructureDrawkey extends SDE
 {
 	private String name;
-	
+
 	public StructureDrawkey(String name)
 	{
 		this.name = name;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public void setName(String name)
 	{
 		this.name = name;
 	}
-	
+
 	@Override
 	public String getDisplayLabel()
 	{
 		return name;
 	}
-	
+
 	public class StructureDrawkeyPanel extends StructureObjectPanel
 	{
 		public StructureDrawkeyPanel(final StructureDrawkey drawkey, PropertiesSheetStyle style)
 		{
 			super(style, drawkey);
-			
+
 			sheet.build()
-			
-				.field("name")._string().add()
-				
+
+				.field("name")._editor(Types._String).add()
+
 				.finish();
-			
+
 			sheet.addPropertyChangeListener(event -> {
 				preview.lightRefreshLeaf(previewKey);
 			});
@@ -63,13 +65,13 @@ public class StructureDrawkey extends SDE
 	}
 
 	private StructureDrawkeyPanel editor = null;
-	
+
 	@Override
 	public JPanel getEditor()
 	{
 		if(editor == null)
 			editor = new StructureDrawkeyPanel(this, PropertiesSheetStyle.LIGHT);
-		
+
 		return editor;
 	}
 
@@ -85,7 +87,7 @@ public class StructureDrawkey extends SDE
 	{
 		editor.revertChanges();
 	}
-	
+
 	public static class DrawkeyType extends SDEType<StructureDrawkey>
 	{
 		public DrawkeyType()
@@ -104,60 +106,60 @@ public class StructureDrawkey extends SDE
 		}
 
 		@Override
-		public void write(StructureDrawkey object, Element e)
+		public void write(StructureDrawkey object, Element e, DataContext ctx)
 		{
 			e.setAttribute("name", object.getName());
 		}
-		
+
 		@Override
 		public StructureDrawkey create(StructureDefinition def, String nodeName)
 		{
 			return new StructureDrawkey(nodeName);
 		}
-		
+
 		@Override
 		public GuiObject psAdd(PropertiesSheet sheet, DefaultBranch parent, DefaultLeaf node, StructureDrawkey value, int i)
 		{
 			int offset = 1;
-			
+
 			Folder extF = ((Folder) parent.getParent());
 			for(DefaultLeaf di : extF.getItems())
 				if(di.getUserData() instanceof StructureCommands)
 					offset += ((Folder) di).getItems().size();
-			
+
 			RowGroup extGroup = (RowGroup) sheet.guiMap.get(parent.getParent());
 			Card parentCard = extGroup.getSubcard();
-			
+
 			RowGroup group = new RowGroup(value);
 			group.add(i == 0 ? sheet.style.createLabel("Drawkeys") : null, sheet.style.createDescriptionRow(value.name));
 			group.add(sheet.style.hintgap);
-			
+
 			parentCard.addGroup(i + offset, group);
-			
+
 			if(!sheet.isChangingLayout)
 				parentCard.layoutContainer();
-			
+
 			return group;
 		}
-		
+
 		@Override
 		public void psRefresh(PropertiesSheet sheet, GuiObject gui, DefaultLeaf node, StructureDrawkey value)
 		{
-			
+
 		}
-		
+
 		@Override
 		public void psRemove(PropertiesSheet sheet, GuiObject gui, DefaultLeaf node, StructureDrawkey value)
 		{
 			RowGroup group = (RowGroup) gui;
 			Card card = group.card;
-			
+
 			int groupIndex = card.indexOf(group);
 			card.removeGroup(groupIndex);
-			
+
 			card.layoutContainer();
 		}
-		
+
 		@Override
 		public void psLightRefresh(PropertiesSheet sheet, GuiObject gui, DefaultLeaf node, StructureDrawkey value)
 		{
