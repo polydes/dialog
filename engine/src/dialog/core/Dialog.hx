@@ -107,7 +107,7 @@ class Dialog
 			if(!_init)
 			{
 				_init = true;
-				Universal.addReloadListener(reload);
+				Engine.addReloadListener(reload);
 			}
 		}
 		return _instance;
@@ -132,8 +132,8 @@ class Dialog
 		var dg:DialogBox = new DialogBox(getDg(dgAddress), cast(style, Style));
 		_instance.addDialogBox(dg);
 
-		Engine.engine.whenDrawingListeners.push(_instance.dialogDrawer);
-		Engine.engine.whenUpdatedListeners.push(_instance.dialogUpdater);
+		Engine.engine.whenDrawing.add(_instance.dialogDrawer);
+		Engine.engine.whenUpdated.add(_instance.dialogUpdater);
 
 		_instance.o = o;
 		_instance.call = call;
@@ -153,8 +153,8 @@ class Dialog
 		var dg:DialogBox = new DialogBox(dgText, cast(style, Style));
 		_instance.addDialogBox(dg);
 
-		Engine.engine.whenDrawingListeners.push(_instance.dialogDrawer);
-		Engine.engine.whenUpdatedListeners.push(_instance.dialogUpdater);
+		Engine.engine.whenDrawing.add(_instance.dialogDrawer);
+		Engine.engine.whenUpdated.add(_instance.dialogUpdater);
 
 		_instance.o = o;
 		_instance.call = call;
@@ -164,19 +164,19 @@ class Dialog
 
 	public static function dgEnded():Void
 	{
-		Engine.engine.whenDrawingListeners.remove(_instance.dialogDrawer);
-		Engine.engine.whenUpdatedListeners.remove(_instance.dialogUpdater);
+		Engine.engine.whenDrawing.remove(_instance.dialogDrawer);
+		Engine.engine.whenUpdated.remove(_instance.dialogUpdater);
 
 		if(_instance.o != null && _instance.call != "")
 			Reflect.callMethod(_instance.o, Reflect.field(_instance.o, "_customEvent_"+_instance.call), []);
 	}
 
-	public function dialogDrawer(g:G, x:Float, y:Float, list:Array<Dynamic>):Void
+	public function dialogDrawer(g:G, x:Float, y:Float):Void
 	{
 		_instance.drawDialogBoxes();
 	}
 
-	public function dialogUpdater(elapsedTime:Float, list:Array<Dynamic>):Void
+	public function dialogUpdater(elapsedTime:Float):Void
 	{
 		_instance.updateDialogBoxes();
 	}
