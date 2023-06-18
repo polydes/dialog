@@ -246,7 +246,7 @@ class BitmapDataUtil
 
 	public static function newTransparentImg(w:Int, h:Int):BitmapData
 	{
-		var bmd = new BitmapData(w, h true, 0);
+		var bmd = new BitmapData(w, h, true, 0);
 		return bmd;
 	}
 
