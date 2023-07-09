@@ -2,9 +2,9 @@ package com.polydes.dialog.data.stores;
 
 import java.io.File;
 
-import com.polydes.datastruct.nodes.DefaultViewableBranch;
+import stencyl.core.api.pnodes.DefaultBranch;
 
-public abstract class TextStore extends DefaultViewableBranch
+public abstract class TextStore extends DefaultBranch
 {
 	protected TextStore(String name)
 	{

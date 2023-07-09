@@ -8,41 +8,42 @@ import java.util.List;
 import javax.swing.*;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.polydes.common.res.ResourceLoader;
-import com.polydes.common.res.Resources;
-import com.polydes.common.sw.Snippets;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.folder.Folder;
 import com.polydes.datastruct.data.structure.StructureDefinition;
-import com.polydes.datastruct.nodes.DefaultEditableLeaf;
+import com.polydes.datastruct.ui.StructureDefinitionIconProvider;
 import com.polydes.datastruct.ui.page.CreateStructureDefinitionDialog;
 import com.polydes.datastruct.ui.page.StructureDefinitionPage;
 import com.polydes.datastruct.ui.page.StructureDefinitionsWindow;
 import com.polydes.dialog.DialogExtension;
 import com.polydes.dialog.app.PluginList;
 import com.polydes.dialog.app.editors.text.TextArea;
+import com.polydes.dialog.data.Snippets;
 import com.polydes.dialog.data.def.elements.StructureExtension;
 
+import stencyl.app.api.nodes.DefaultNodeCreator;
+import stencyl.app.api.nodes.HierarchyModelInterface;
+import stencyl.app.api.nodes.NodeCreator.CreatableNodeInfo;
+import stencyl.app.api.nodes.NodeCreator.NodeAction;
+import stencyl.app.api.nodes.NodeIconProvider;
+import stencyl.app.api.nodes.select.NodeSelection;
+import stencyl.app.comp.HorizontalDivider;
+import stencyl.app.comp.TitledPanel;
+import stencyl.app.comp.UI;
+import stencyl.app.comp.dg.MessageDialog;
 import stencyl.core.SWC;
-import stencyl.core.api.fs.Locations;
 import stencyl.core.api.pnodes.DefaultBranch;
 import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.api.pnodes.HierarchyModel;
 import stencyl.core.api.pnodes.NodeUtils;
-import stencyl.core.engine.snippet.ISnippet;
-import stencyl.core.lib.Game;
+import stencyl.core.ext.res.ResourceLoader;
+import stencyl.core.ext.res.Resources;
+import stencyl.core.lib.IProject;
+import stencyl.core.lib.code.snippet.Snippet;
 import stencyl.sw.app.doc.Workspace;
-import stencyl.toolset.api.nodes.DefaultNodeCreator;
-import stencyl.toolset.api.nodes.HierarchyModel;
-import stencyl.toolset.api.nodes.NodeCreator.CreatableNodeInfo;
-import stencyl.toolset.api.nodes.NodeCreator.NodeAction;
-import stencyl.toolset.api.nodes.select.NodeSelection;
-import stencyl.toolset.comp.HorizontalDivider;
-import stencyl.toolset.comp.TitledPanel;
-import stencyl.toolset.comp.UI;
-import stencyl.toolset.comp.dg.MessageDialog;
+import stencyl.sw.core.lib.game.Game;
 
 public class PluginsPage extends JPanel
 {
@@ -53,7 +54,9 @@ public class PluginsPage extends JPanel
 	private static PluginsPage _instance;
 	
 	private HierarchyModel<DefaultLeaf, DefaultBranch> dialogDefsFM;
-	private HierarchyModel<DefaultLeaf,DefaultBranch> userDefsFM;
+	private HierarchyModel<DefaultLeaf, DefaultBranch> userDefsFM;
+	private HierarchyModelInterface<DefaultLeaf, DefaultBranch> dialogDefsFmUi;
+	private HierarchyModelInterface<DefaultLeaf, DefaultBranch> userDefsFmUi;
 	
 	private PluginList dialogDefsList;
 	private PluginList userDefsList;
@@ -68,13 +71,13 @@ public class PluginsPage extends JPanel
 	
 	public static NodeAction<DefaultLeaf> editPluginCode = new NodeAction<DefaultLeaf>("Edit Code", null, leaf -> {
 		StructureDefinition def = (StructureDefinition) leaf.getUserData();
+		IProject project = DataStructuresExtension.get().getProject();
 		
 		NodeUtils.recursiveRun(def.guiRoot, (DefaultLeaf defLeaf) -> {
 			if(defLeaf.getUserData() instanceof StructureExtension)
 			{
 				String implementingClass = ((StructureExtension) defLeaf.getUserData()).implementation;
-				implementingClass = StringUtils.substringAfter(implementingClass, Locations.SCRIPTS_PACKAGE);
-				ISnippet toEdit = Game.getGame().getSnippetByClassname(implementingClass);
+				Snippet toEdit = ((Game) project).getSnippetByClassname(implementingClass);
 				if(toEdit == null)
 					MessageDialog.showErrorDialog("No implementation", "Couldn't find behavior with classname \"" + implementingClass + "\".");
 				SWC.get(Workspace.class).openResource(toEdit, false);
@@ -97,8 +100,12 @@ public class PluginsPage extends JPanel
 		DefaultBranch dialogDefsRoot = (DefaultBranch) root.getItemByName(DialogExtension.get().getManifest().name);
 		DefaultBranch userDefsRoot = (DefaultBranch) root.getItemByName("My Structures");
 		
-		dialogDefsFM = new HierarchyModel<DefaultLeaf,DefaultBranch>(dialogDefsRoot, DefaultLeaf.class, DefaultBranch.class);
-		userDefsFM = new HierarchyModel<DefaultLeaf,DefaultBranch>(userDefsRoot, DefaultLeaf.class, DefaultBranch.class)
+		dialogDefsFM = new HierarchyModel<>(dialogDefsRoot, DefaultLeaf.class, DefaultBranch.class);
+		userDefsFM = new HierarchyModel<>(userDefsRoot, DefaultLeaf.class, DefaultBranch.class);
+		
+		dialogDefsFmUi = new HierarchyModelInterface<>(dialogDefsFM);
+		
+		userDefsFmUi = new HierarchyModelInterface<>(userDefsFM)
 		{
 			@Override
 			public DefaultBranch getCreationParentFolder(NodeSelection<DefaultLeaf, DefaultBranch> state)
@@ -106,8 +113,8 @@ public class PluginsPage extends JPanel
 				return userDefsRoot;
 			}
 		};
-		
-		dialogDefsFM.setNodeCreator(new DefaultNodeCreator<DefaultLeaf, DefaultBranch>()
+
+		dialogDefsFmUi.setNodeCreator(new DefaultNodeCreator<DefaultLeaf, DefaultBranch>()
 		{
 			@Override
 			public ArrayList<NodeAction<DefaultLeaf>> getNodeActions(DefaultLeaf[] targets)
@@ -124,7 +131,7 @@ public class PluginsPage extends JPanel
 			}
 		});
 		
-		userDefsFM.setNodeCreator(new DefaultNodeCreator<DefaultLeaf, DefaultBranch>()
+		userDefsFmUi.setNodeCreator(new DefaultNodeCreator<DefaultLeaf, DefaultBranch>()
 		{
 			@Override
 			public void nodeRemoved(DefaultLeaf toRemove)
@@ -133,9 +140,10 @@ public class PluginsPage extends JPanel
 			}
 			
 			@Override
-			public DefaultLeaf createNode(CreatableNodeInfo selected, String nodeName)
+			public DefaultLeaf createNode(CreatableNodeInfo selected, String nodeName, DefaultBranch newNodeFolder, int insertPosition)
 			{
-				CreateStructureDefinitionDialog dg = new CreateStructureDefinitionDialog(Game.getGame());
+				IProject project = DialogExtension.get().getProject();
+				CreateStructureDefinitionDialog dg = new CreateStructureDefinitionDialog(project);
 				dg.setParentClass((StructureDefinition) dialogDefsRoot.getItemByName("Dialog Extension").getUserData());
 				dg.setNodeName("New Plugin");
 				StructureDefinition toCreate = dg.newDef;
@@ -162,10 +170,12 @@ public class PluginsPage extends JPanel
 				newScriptTemplate = newScriptTemplate.replaceAll("PACKAGE", "scripts");
 				newScriptTemplate = newScriptTemplate.replaceAll("NAME", "\"" + newScriptName + "\"");
 				
-				Snippets.createNew(newScriptName, "scripts", newScriptClass, "Implementation of Dialog plugin.", newScriptTemplate);
+				Snippets.createNew(project, newScriptName, "scripts", newScriptClass, "Implementation of Dialog plugin.", newScriptTemplate);
 				
 				StructureExtension newItem = new StructureExtension(newScriptQualifiedClass, "Description for " + newScriptName);
-				toCreate.guiRoot.addItem(new DefaultEditableLeaf(newItem.getDisplayLabel(), newItem));
+				DefaultLeaf newLeaf = new DefaultLeaf(newItem.getDisplayLabel(), newItem);
+				newLeaf.setDirty(true);
+				toCreate.guiRoot.addItem(newLeaf);
 				
 				DataStructuresExtension.get().getStructureDefinitions().registerItem(toCreate);
 				return toCreate.dref;
@@ -198,12 +208,14 @@ public class PluginsPage extends JPanel
 		JPanel content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 		content.setBackground(TextArea.TEXT_EDITOR_COLOR);
+
+		NodeIconProvider<DefaultLeaf> pluginNodeIconProvider = new StructureDefinitionIconProvider();
 		
 		TitledPanel dialogDefsWrapper = new TitledPanel("Builtin Plugins", null);
-		dialogDefsWrapper.add(dialogDefsList = new PluginList(dialogDefsFM), BorderLayout.CENTER);
+		dialogDefsWrapper.add(dialogDefsList = new PluginList(dialogDefsFmUi, pluginNodeIconProvider), BorderLayout.CENTER);
 		
 		TitledPanel userDefsWrapper = new TitledPanel("Custom Plugins", null);
-		userDefsWrapper.add(userDefsList = new PluginList(userDefsFM), BorderLayout.CENTER);
+		userDefsWrapper.add(userDefsList = new PluginList(userDefsFmUi, pluginNodeIconProvider), BorderLayout.CENTER);
 		
 		content.add(dialogDefsWrapper);
 		content.add(new HorizontalDivider(2));
@@ -212,7 +224,7 @@ public class PluginsPage extends JPanel
 		
 		add(UI.createScrollPane(content), BorderLayout.CENTER);
 	}
-	
+
 	public static PluginsPage get()
 	{
 		if (_instance == null)

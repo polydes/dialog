@@ -22,12 +22,14 @@ import javax.swing.text.TabStop;
 
 import org.apache.log4j.Logger;
 
+import com.polydes.datastruct.ui.object.ObjectEditor;
 import com.polydes.dialog.data.TextSource;
 
+import stencyl.app.comp.TitledPanel;
+import stencyl.app.comp.filelist.TreePage.FullViewPanel;
 import stencyl.core.api.pnodes.Leaf;
-import stencyl.toolset.comp.TitledPanel;
 
-public class TextArea extends TitledPanel implements PropertyChangeListener
+public class TextArea extends TitledPanel implements PropertyChangeListener, ObjectEditor, FullViewPanel
 {
 	private static final Logger log = Logger.getLogger(TextArea.class);
 	
@@ -216,7 +218,13 @@ public class TextArea extends TitledPanel implements PropertyChangeListener
 	{
 		source.setDirty(true);
 	}
-	
+
+	@Override
+	public void saveChanges()
+	{
+		source.updateLines(getLines());
+	}
+
 	public ArrayList<String> getLines()
 	{
 		StyledDocument doc = textPane.getStyledDocument();
@@ -268,5 +276,11 @@ public class TextArea extends TitledPanel implements PropertyChangeListener
 	public void propertyChange(PropertyChangeEvent evt)
 	{
 		label.setText((String) evt.getNewValue());
+	}
+
+	@Override
+	public void revertChanges()
+	{
+		
 	}
 }

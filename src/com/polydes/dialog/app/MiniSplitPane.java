@@ -21,11 +21,9 @@
 
 package com.polydes.dialog.app;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 
-import javax.swing.JSplitPane;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;

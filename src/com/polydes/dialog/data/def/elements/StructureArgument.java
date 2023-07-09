@@ -1,17 +1,9 @@
 package com.polydes.dialog.data.def.elements;
 
-import javax.swing.*;
-
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import stencyl.core.api.datatypes.DataContext;
 import stencyl.core.api.datatypes.DataType;
-import stencyl.core.api.datatypes.properties.DataTypeProperties;
-import stencyl.toolset.api.datatypes.DataEditor;
-import stencyl.toolset.comp.datatypes.enumprim.EnumEditor;
-import stencyl.toolset.comp.datatypes.string.SingleLineStringEditor;
-import stencyl.toolset.comp.propsheet.PropertiesSheetStyle;
 
 public class StructureArgument
 {
@@ -89,54 +81,6 @@ public class StructureArgument
 		public StructureArgument copy(StructureArgument t)
 		{
 			return new StructureArgument(t.name, t.type);
-		}
-	}
-	
-	public static class StructureArgumentEditor extends DataEditor<StructureArgument>
-	{
-		StructureArgument arg;
-		
-		final DataEditor<String> nameEditor;
-		final DataEditor<Type> typeEditor;
-		
-		final JComponent[] comps;
-		
-		public StructureArgumentEditor(DataTypeProperties props, PropertiesSheetStyle style)
-		{
-			nameEditor = new SingleLineStringEditor(new DataTypeProperties(), style);
-			nameEditor.addListener(() -> updated());
-			
-			typeEditor = new EnumEditor<Type>(Type.class);
-			typeEditor.addListener(() -> updated());
-			
-			comps = ArrayUtils.addAll(nameEditor.getComponents(), typeEditor.getComponents());
-		}
-		
-		@Override
-		public void set(StructureArgument t)
-		{
-			nameEditor.setValue(t.name);
-			typeEditor.setValue(t.type);
-		}
-		
-		@Override
-		public StructureArgument getValue()
-		{
-			return new StructureArgument(nameEditor.getValue(), typeEditor.getValue());
-		}
-		
-		@Override
-		public JComponent[] getComponents()
-		{
-			return comps;
-		}
-		
-		@Override
-		public void dispose()
-		{
-			super.dispose();
-			nameEditor.dispose();
-			typeEditor.dispose();
 		}
 	}
 }

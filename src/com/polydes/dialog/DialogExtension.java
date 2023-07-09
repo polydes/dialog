@@ -5,16 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.swing.*;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
-import com.polydes.common.ext.ExtensionInterface;
-import com.polydes.common.res.ResourceLoader;
-import com.polydes.common.res.Resources;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.structure.SDEType;
 import com.polydes.datastruct.data.structure.SDETypes;
@@ -22,6 +17,8 @@ import com.polydes.datastruct.data.structure.elements.StructureTab;
 import com.polydes.datastruct.data.types.HaxeDataType;
 import com.polydes.datastruct.ext.HaxeDataTypeExtension;
 import com.polydes.dialog.app.MainEditor;
+import com.polydes.dialog.app.pages.DialogPage;
+import com.polydes.dialog.app.pages.MacrosPage;
 import com.polydes.dialog.data.DgTypes;
 import com.polydes.dialog.data.def.elements.StructureCommand.CommandType;
 import com.polydes.dialog.data.def.elements.StructureCommands.CommandsType;
@@ -35,15 +32,18 @@ import com.polydes.dialog.updates.DS_V4_FullTypeNamesUpdate;
 import com.polydes.dialog.updates.V5_GameExtensionUpdate;
 import com.polydes.dialog.updates.V6_ExtensionSubmodules;
 
+import stencyl.app.ext.PageAddon;
 import stencyl.core.api.datatypes.DataContext;
 import stencyl.core.api.fs.Locations;
 import stencyl.core.datatypes.Types;
+import stencyl.core.ext.ExtensionInterface;
+import stencyl.core.ext.GameExtension;
+import stencyl.core.ext.engine.ExtensionInstanceManager.FormatUpdateSubmitter;
+import stencyl.core.ext.res.ResourceLoader;
+import stencyl.core.ext.res.Resources;
 import stencyl.core.io.FileHelper;
-import stencyl.core.lib.Game;
 import stencyl.core.util.Lang;
-import stencyl.sw.app.ExtensionManager.FormatUpdateSubmitter;
-import stencyl.sw.ext.GameExtension;
-import stencyl.sw.ext.OptionsPanel;
+import stencyl.sw.app.center.GameLibrary;
 
 public class DialogExtension extends GameExtension
 {
@@ -60,25 +60,14 @@ public class DialogExtension extends GameExtension
 		return _instance;
 	}
 	
-	/*
-	 * Happens when StencylWorks launches.
-	 * 
-	 * Avoid doing anything time-intensive in here, or it will slow down launch.
-	 */
 	@Override
-	public void onStartup()
+	public void onLoad()
 	{
-		super.onStartup();
-		
 		LogManager.getLogger("com.polydes.dialog").setLevel(Level.DEBUG);
 		
 		_instance = this;
-		
-		isInMenu = true;
-		menuName = "Dialog Extension";
 
-		isInGameCenter = true;
-		gameCenterName = "Dialog Extension";
+		owner().setAddon(GameLibrary.DASHBOARD_SIDEBAR_PAGE_ADDONS, (PageAddon) MainEditor::get);
 		
 		sdeTypes = Lang.arraylist(
 			new ExtensionType(),
@@ -87,42 +76,43 @@ public class DialogExtension extends GameExtension
 			new DrawkeysType(),
 			new DrawkeyType()
 		);
+
+		Dialog.get().load(new File(getExtrasFolder(), "dialog.txt"));
+		Macros.get().load(new File(getExtrasFolder(), "macros.txt"));
+
+		ExtensionInterface.doUponLoad(getProject(), "com.polydes.datastruct", () -> {
+
+			DataStructuresExtension dse = DataStructuresExtension.get();
+
+			for(SDEType<?> sdet : sdeTypes)
+				dse.getSdeTypes().registerItem(getManifest().id, sdet);
+			SDETypes.fromClass(StructureTab.class).childTypes.add(StructureExtension.class);
+			DgTypes.registerTypes();
+
+			DataContext ctx = DataContext.fromMap(Map.of("Project", getProject()));
+
+			types = HaxeDataTypeExtension.readTypesFolder(new File(Locations.getGameExtensionLocation("com.polydes.dialog"), "types"), ctx);
+			for(HaxeDataType type : types)
+				dse.getHaxeTypes().registerItem(type);
+
+			File defLoc = new File(Locations.getGameExtensionLocation("com.polydes.dialog"), "def");
+			dse.getStructureDefinitions().addFolder(defLoc, getManifest().name);
+		});
 	}
 	
 	@Override
-	public void extensionsReady()
+	public void onInstalled()
 	{
-		
+		loadDefaults();
 	}
-	
-	/*
-	 * Happens when the extension is told to display.
-	 * 
-	 * May happen multiple times during the course of the app.
-	 * 
-	 * A good way to handle this is to make your extension a singleton.
-	 */
+
+	protected int detectOldInstall()
+	{
+		return getProject().getFile("extras", "[ext] dialog").exists() ? 4 : -1;
+	}
+
 	@Override
-	public void onActivate()
-	{
-	}
-	
-	@Override
-	public void onInstalledForGame(FormatUpdateSubmitter updateQueue)
-	{
-		if(detectOldInstall())
-			updateFromVersion(4, updateQueue);
-		else
-			loadDefaults();
-	}
-	
-	private boolean detectOldInstall()
-	{
-		return getGame().files.getFile("extras", "[ext] dialog").exists();
-	}
-	
-	@Override
-	public void onUninstalledForGame()
+	protected void onUninstalled()
 	{
 		FileHelper.delete(getExtrasFolder());
 		FileHelper.delete(getDataFolder());
@@ -132,7 +122,7 @@ public class DialogExtension extends GameExtension
 	public void updateFromVersion(int fromVersion, FormatUpdateSubmitter updateQueue)
 	{
 		if(fromVersion < 5)
-			updateQueue.add(new V5_GameExtensionUpdate(getGame()));
+			updateQueue.add(new V5_GameExtensionUpdate(getProject()));
 		if(fromVersion < 6)
 		{
 			updateQueue
@@ -141,7 +131,7 @@ public class DialogExtension extends GameExtension
 			updateQueue
 				.after(V5_GameExtensionUpdate.class)
 				.after(com.polydes.datastruct.updates.V4_FullTypeNamesUpdate.class)
-				.add(new V6_ExtensionSubmodules());
+				.add(new V6_ExtensionSubmodules(getProject()));
 		}
 	}
 	
@@ -166,68 +156,19 @@ public class DialogExtension extends GameExtension
 	}
 	
 	@Override
-	public JPanel onGameCenterActivate()
+	protected void onSave()
 	{
-		return MainEditor.get();
-	}
-
-	/*
-	 * Happens when StencylWorks closes.
-	 * 
-	 * Usually used to save things out.
-	 */
-	@Override
-	public void onDestroy()
-	{
-	}
-
-	
-	/*
-	 * Happens when the user runs, previews or exports the game.
-	 */
-	@Override
-	public void onGameBuild(Game game)
-	{
+		DialogPage.saveChanges();
+		MacrosPage.saveChanges();
 		
-	}
-	
-	@Override
-	public void onGameWithDataOpened()
-	{
-		ExtensionInterface.doUponLoad("com.polydes.datastruct", () -> {
-			
-			DataStructuresExtension dse = DataStructuresExtension.get();
-			
-			for(SDEType<?> sdet : sdeTypes)
-				dse.getSdeTypes().registerItem(getManifest().id, sdet);
-			SDETypes.fromClass(StructureTab.class).childTypes.add(StructureExtension.class);
-			DgTypes.registerTypes();
-			
-			DataContext ctx = DataContext.fromMap(Map.of("Project", getGame()));
-			
-			types = HaxeDataTypeExtension.readTypesFolder(new File(Locations.getGameExtensionLocation("com.polydes.dialog"), "types"), ctx);
-			for(HaxeDataType type : types)
-				dse.getHaxeTypes().registerItem(type);
-			
-			File defLoc = new File(Locations.getGameExtensionLocation("com.polydes.dialog"), "def");
-			dse.getStructureDefinitions().addFolder(defLoc, getManifest().name);
-		});
-		
-		Dialog.get().load(new File(getExtrasFolder(), "dialog.txt"));
-		Macros.get().load(new File(getExtrasFolder(), "macros.txt"));
-	}
-
-	@Override
-	public void onGameWithDataSaved()
-	{
 		Dialog.get().saveChanges(new File(getExtrasFolder(), "dialog.txt"));
 		Macros.get().saveChanges(new File(getExtrasFolder(), "macros.txt"));
 		
 		MainEditor.get().gameSaved();
 	}
-	
+
 	@Override
-	public void onGameWithDataClosed()
+	protected void onUnload()
 	{
 		for(HaxeDataType type : types)
 			Types.get().unloadReference(type.dataType);
@@ -241,40 +182,5 @@ public class DialogExtension extends GameExtension
 		Macros.get().dispose();
 		
 		types = null;
-	}
-
-	/*
-	 * Happens when the user requests the Options dialog for your extension.
-	 * 
-	 * You need to provide the form. We wrap it in a dialog.
-	 */
-	@Override
-	public OptionsPanel onOptions()
-	{
-		return null;
-	}
-	
-	@Override
-	protected boolean hasOptions()
-	{
-		return false;
-	}
-
-	/*
-	 * Happens when the extension is first installed.
-	 */
-	@Override
-	public void onInstall()
-	{
-	}
-
-	/*
-	 * Happens when the extension is uninstalled.
-	 * 
-	 * Clean up files.
-	 */
-	@Override
-	public void onUninstall()
-	{
 	}
 }

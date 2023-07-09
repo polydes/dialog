@@ -8,7 +8,7 @@ import com.polydes.dialog.io.Text;
 
 import stencyl.core.api.pnodes.DefaultBranch;
 import stencyl.core.api.pnodes.DefaultLeaf;
-import stencyl.toolset.api.nodes.HierarchyModel;
+import stencyl.core.api.pnodes.HierarchyModel;
 
 public class Macros extends TextStore
 {
@@ -41,6 +41,7 @@ public class Macros extends TextStore
 		TextSource info = new TextSource("-Info-", new ArrayList<>());
 		TextSource tags = new TextSource("Tags", new ArrayList<>());
 		TextSource characters = new TextSource("Characters", new ArrayList<>());
+		markAsLoading(true);
 		addItem(info);
 		addItem(tags);
 		addItem(characters);
@@ -57,8 +58,7 @@ public class Macros extends TextStore
 		
 		for(DefaultLeaf item : getItems())
 			((TextSource) item).trimLeadingTailingNewlines();
-		
-		setDirty(false);
+		markAsLoading(false);
 	}
 	
 	@Override
@@ -69,8 +69,6 @@ public class Macros extends TextStore
 			Text.startWriting(file);
 			for(DefaultLeaf item : getItems())
 			{
-				if(item.isDirty())
-					((TextSource) item).updateLines();
 				for(String line : ((TextSource) item).getLines())
 					Text.writeLine(file, line);
 				Text.writeLine(file, "");

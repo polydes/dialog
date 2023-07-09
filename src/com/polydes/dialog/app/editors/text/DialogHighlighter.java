@@ -1,6 +1,6 @@
 package com.polydes.dialog.app.editors.text;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

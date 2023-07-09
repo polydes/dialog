@@ -2,34 +2,51 @@ package com.polydes.dialog.app.pages;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.*;
 
-import com.polydes.datastruct.nodes.DefaultEditableLeaf;
-import com.polydes.datastruct.nodes.DefaultViewableBranch;
-import com.polydes.datastruct.nodes.DefaultViewableBranch.DefaultViewableNodeUIProvider;
+import com.polydes.datastruct.ui.UIConsts;
 import com.polydes.dialog.app.MiniSplitPane;
+import com.polydes.dialog.app.editors.text.Highlighter;
+import com.polydes.dialog.app.editors.text.TextArea;
 import com.polydes.dialog.data.TextSource;
 
+import stencyl.app.api.nodes.HierarchyModelInterface;
+import stencyl.app.api.nodes.NodeCreator;
+import stencyl.app.api.nodes.NodeIconProvider;
+import stencyl.app.api.nodes.NodeViewProvider;
+import stencyl.app.comp.darktree.DarkTree;
+import stencyl.app.comp.filelist.TreePage;
 import stencyl.core.api.pnodes.DefaultBranch;
 import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.api.pnodes.HierarchyModel;
 import stencyl.core.util.Lang;
-import stencyl.toolset.api.nodes.HierarchyModel;
-import stencyl.toolset.api.nodes.NodeCreator;
-import stencyl.toolset.comp.darktree.DarkTree;
-import stencyl.toolset.comp.filelist.TreePage;
 
-public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements NodeCreator<DefaultLeaf, DefaultBranch>
+public class SourcePage extends JPanel implements NodeCreator<DefaultLeaf, DefaultBranch>
 {
+	HierarchyModelInterface<DefaultLeaf,DefaultBranch> modelInterface;
+	HierarchyModel<DefaultLeaf,DefaultBranch> model;
 	TreePage<DefaultLeaf,DefaultBranch> treePage;
 	MiniSplitPane splitPane;
+
+	protected Highlighter textHighlighter = TextSource.basicHighlighter;
+
+	private final Map<TextSource, TextArea> editors = new IdentityHashMap<>();
 	
 	public SourcePage(HierarchyModel<DefaultLeaf,DefaultBranch> model)
 	{
 		super(new BorderLayout());
-		treePage = new TreePage<>(model, new DefaultViewableNodeUIProvider<>());
-		model.setNodeCreator(this);
+		
+		this.model = model;
+		modelInterface = new HierarchyModelInterface<>(model);
+		SourcePageUiProvider uiProvider = new SourcePageUiProvider();
+		treePage = new TreePage<>(modelInterface);
+		treePage.setNodeIconProvider(uiProvider);
+		treePage.setNodeViewProvider(uiProvider);
+		modelInterface.setNodeCreator(this);
 		
 		add(splitPane = new MiniSplitPane(), BorderLayout.CENTER);
 		
@@ -37,6 +54,71 @@ public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements
 		splitPane.setLeftComponent(treePage.getTree());
 		splitPane.setRightComponent(treePage);
 		splitPane.setDividerLocation(DarkTree.DEF_WIDTH);
+	}
+
+	/*================================================*\
+	 | Node UI
+	\*================================================*/
+
+	public void setTextHighlighter(Highlighter textHighlighter)
+	{
+		this.textHighlighter = textHighlighter;
+	}
+
+	protected final class SourcePageUiProvider implements
+		NodeIconProvider<DefaultLeaf>,
+		NodeViewProvider<DefaultLeaf,DefaultBranch>
+	{
+		@Override
+		public ImageIcon getIcon(DefaultLeaf object)
+		{
+			if(object instanceof DefaultBranch)
+			{
+				return UIConsts.folderIcon;
+			}
+
+			return null;
+		}
+
+		@Override
+		public JPanel getView(DefaultLeaf object)
+		{
+			if(object instanceof TextSource textSource)
+				return editors.computeIfAbsent(textSource, ts -> new TextArea(ts, textHighlighter));
+			return null;
+		}
+
+		@Override
+		public void disposeView(DefaultLeaf object)
+		{
+			if(object instanceof TextSource textSource)
+			{
+				if(editors.remove(textSource) instanceof TextArea textArea)
+					textArea.dispose();
+			}
+		}
+	}
+	
+	public void saveEditors()
+	{
+		if(model.getRootBranch().isDirty())
+		{
+			saveEditors(model.getRootBranch());
+		}
+	}
+
+	private void saveEditors(DefaultBranch branch)
+	{
+		for(DefaultLeaf leaf : branch.getItems())
+		{
+			if(leaf.isDirty())
+			{
+				if(leaf instanceof DefaultBranch subBranch)
+					saveEditors(subBranch);
+				else if(leaf instanceof TextSource textSource)
+					textSource.updateLines(editors.get(textSource).getLines());
+			}
+		}
 	}
 	
 	/*================================================*\
@@ -52,12 +134,15 @@ public class SourcePage<T extends DefaultEditableLeaf> extends JPanel implements
 	}
 
 	@Override
-	public DefaultLeaf createNode(CreatableNodeInfo selected, String nodeName)
+	public DefaultLeaf createNode(CreatableNodeInfo selected, String nodeName, DefaultBranch newNodeFolder, int insertPosition)
 	{
+		DefaultLeaf newLeaf;
 		if(selected.name.equals("Folder"))
-			return new DefaultViewableBranch(nodeName);
-		
-		return new TextSource(nodeName, new ArrayList<>());
+			newLeaf = new DefaultBranch(nodeName);
+		else
+			newLeaf = new TextSource(nodeName, new ArrayList<>());
+		newLeaf.setDirty(true);
+		return newLeaf;
 	}
 	
 	@Override

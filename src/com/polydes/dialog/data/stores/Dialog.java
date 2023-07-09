@@ -2,7 +2,6 @@ package com.polydes.dialog.data.stores;
 
 import java.io.File;
 
-import com.polydes.datastruct.nodes.DefaultViewableBranch;
 import com.polydes.dialog.data.TextSource;
 import com.polydes.dialog.io.Text;
 import com.polydes.dialog.io.Text.TextFolder;
@@ -11,7 +10,7 @@ import com.polydes.dialog.io.Text.TextSection;
 
 import stencyl.core.api.pnodes.DefaultBranch;
 import stencyl.core.api.pnodes.DefaultLeaf;
-import stencyl.toolset.api.nodes.HierarchyModel;
+import stencyl.core.api.pnodes.HierarchyModel;
 
 public class Dialog extends TextStore
 {
@@ -22,7 +21,7 @@ public class Dialog extends TextStore
 	private Dialog()
 	{
 		super("Dialog");
-		folderModel = new HierarchyModel<DefaultLeaf, DefaultBranch>(this, DefaultLeaf.class, DefaultBranch.class);
+		folderModel = new HierarchyModel<>(this, DefaultLeaf.class, DefaultBranch.class);
 	}
 	
 	public static Dialog get()
@@ -44,23 +43,23 @@ public class Dialog extends TextStore
 		TextFolder root = Text.readSectionedText(file, "#");
 		for(TextObject object : root.parts.values())
 			load(this, object);
-		setDirty(false);
 	}
 	
 	public void load(DefaultBranch f, TextObject o)
 	{
+		f.markAsLoading(true);
 		if(o instanceof TextFolder)
 		{
-			DefaultBranch newFolder = new DefaultViewableBranch(o.name);
+			DefaultBranch newFolder = new DefaultBranch(o.name);
 			for(TextObject object : ((TextFolder) o).parts.values())
 				load(newFolder, object);
 			f.addItem(newFolder);
 		}
 		else if(o instanceof TextSection)
 		{
-			TextSource text = new TextSource(o.name, ((TextSection) o).parts);
-			f.addItem(text);
+			f.addItem(new TextSource(o.name, ((TextSection) o).parts));
 		}
+		f.markAsLoading(false);
 	}
 	
 	@Override
@@ -88,7 +87,6 @@ public class Dialog extends TextStore
 		else
 		{
 			TextSource source = (TextSource) item;
-			source.updateLines();
 			
 			TextSection newSection = new TextSection(item.getName());
 			newSection.parts = source.getLines();

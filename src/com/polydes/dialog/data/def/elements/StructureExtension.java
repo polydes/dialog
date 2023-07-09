@@ -4,11 +4,10 @@ import javax.swing.*;
 
 import org.w3c.dom.Element;
 
-import com.polydes.common.io.XML;
 import com.polydes.datastruct.data.structure.SDE;
 import com.polydes.datastruct.data.structure.SDEType;
 import com.polydes.datastruct.data.structure.StructureDefinition;
-import com.polydes.datastruct.ui.objeditors.StructureObjectPanel;
+import com.polydes.datastruct.ui.objeditors.StructureDefinitionEditor;
 import com.polydes.datastruct.ui.table.Card;
 import com.polydes.datastruct.ui.table.GuiObject;
 import com.polydes.datastruct.ui.table.PropertiesSheet;
@@ -17,10 +16,8 @@ import com.polydes.datastruct.ui.table.RowGroup;
 import stencyl.core.api.datatypes.DataContext;
 import stencyl.core.api.pnodes.DefaultBranch;
 import stencyl.core.api.pnodes.DefaultLeaf;
-import stencyl.core.datatypes.Types;
+import stencyl.core.io.XML;
 import stencyl.core.util.Lang;
-import stencyl.toolset.comp.datatypes.string.ExpandingStringEditor;
-import stencyl.toolset.comp.propsheet.PropertiesSheetStyle;
 
 public class StructureExtension extends SDE
 {
@@ -38,48 +35,7 @@ public class StructureExtension extends SDE
 	{
 		return "Dialog Extension";
 	}
-	
-	public class StructureExtensionPanel extends StructureObjectPanel
-	{
-		public StructureExtensionPanel(final StructureExtension extension, PropertiesSheetStyle style)
-		{
-			super(style, extension);
-			
-			sheet.build()
-			
-				.field("implementation")._editor(Types._String).add()
-				
-				.field("description")._editor(ExpandingStringEditor.BUILDER).add()
-				.onUpdate(() -> preview.lightRefreshLeaf(previewKey))
-				
-				.finish();
-		}
-	}
 
-	private StructureExtensionPanel editor = null;
-	
-	@Override
-	public JPanel getEditor()
-	{
-		if(editor == null)
-			editor = new StructureExtensionPanel(this, PropertiesSheetStyle.LIGHT);
-		
-		return editor;
-	}
-
-	@Override
-	public void disposeEditor()
-	{
-		editor.dispose();
-		editor = null;
-	}
-
-	@Override
-	public void revertChanges()
-	{
-		editor.revertChanges();
-	}
-	
 	public static class ExtensionType extends SDEType<StructureExtension>
 	{
 		public ExtensionType()
@@ -105,7 +61,7 @@ public class StructureExtension extends SDE
 		}
 		
 		@Override
-		public StructureExtension create(StructureDefinition def, String nodeName)
+		public StructureExtension create(StructureDefinition def, StructureDefinitionEditor defEditor, String nodeName)
 		{
 			return new StructureExtension("", "");
 		}

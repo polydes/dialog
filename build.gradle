@@ -12,6 +12,11 @@ tasks.withType(JavaCompile).each {
     it.options.compilerArgs.add('--enable-preview')
 }
 
+//building an artifact using a local-only build artifact of Stencyl
+var localBuild = project.hasProperty("local_build")
+//developing as a submodule of Stencyl
+var localDev = project.hasProperty("local_dev")
+
 group = 'com.polydes'
 version = rootProject.file('version.txt').text.trim()
 
@@ -33,29 +38,41 @@ processResources {
 }
 
 repositories {
-    mavenCentral()
-    maven {
-        url "https://www.stencyl.com/dl/maven2/releases"
-    }
-    maven {
-        url "https://www.stencyl.com/dl/maven2/snapshots"
-    }
+	if(localBuild) {
+		mavenLocal()
+	}
+	mavenCentral()
+	maven {
+		url "https://www.stencyl.com/dl/maven2/releases"
+	}
+	maven {
+		url "https://www.stencyl.com/dl/maven2/snapshots"
+	}
 }
 
 dependencies {
     //Stencyl and its dependencies
     implementation enforcedPlatform('com.stencyl:stencyl-platform:4.1.0-SNAPSHOT')
-    //compileOnly group: 'com.stencyl',        name: 'stencyl', version: '4.1.0-SNAPSHOT'
-	compileOnly project(":")
-	compileOnly project(":stencyl-v5-core")
-	compileOnly project(":stencyl-v5-toolset")
-    compileOnly group: 'com.stencyl',        name: 'jide-oss'
+    if(localDev) {
+		compileOnly project(":")
+		compileOnly project(":stencyl-v5-core")
+		compileOnly project(":stencyl-v5-toolset")
+	} else {
+		compileOnly group: 'com.stencyl', name: 'stencyl', version: '4.1.0-SNAPSHOT'
+	}
+	compileOnly group: 'com.stencyl',        name: 'jide-oss'
 	compileOnly group: 'com.stencyl',        name: 'jide-components'
     compileOnly group: 'org.apache.commons', name: 'commons-lang3'
 	compileOnly group: 'ch.qos.reload4j',    name: 'reload4j'
     compileOnly group: 'commons-io',         name: 'commons-io'
-    //compileOnly(files(stencylWorkspace+"/extensions/com.polydes.datastruct.jar"))
-	compileOnly project(":ext-structures")
+    if(localDev) {
+		compileOnly project(":ext-structures")
+	} else if(localBuild) {
+		compileOnly(files("../structures/engine/toolset-extension.jar"))
+		//compileOnly(files(stencylWorkspace+"/engine-extensions/com.polydes.datastruct/toolset-extension.jar"))
+	} else {
+		//TODO: grab structures jar from repository
+	}
 }
 
 jar {
@@ -68,7 +85,7 @@ jar {
 			"Extension-Main-Class": "com.polydes.dialog.DialogExtension",
 			"Extension-Version": version,
 			"Extension-Icon": "com/polydes/dialog/res/icon.png",
-			"Extension-Dependencies": "stencyl-4.1.0-b10700,toolset-com.polydes.datastruct-2.0.0,engine-com.polydes.dialog-2.0.4",
+			"Extension-Dependencies": "",
 			"Extension-Type": "game",
 			"Extension-Name": "Dialog Extension",
 			"Extension-Description": "Toolset side of the Dialog Extension.",
@@ -80,18 +97,15 @@ jar {
 	}
 }
 
-tasks.register('installEngineToWorkspace', Sync) {
+tasks.register('buildForEngine', Copy) {
+	from(tasks.named("jar")) {
+		rename { fileName -> "toolset-extension.jar" }
+	}
+	into "engine"
+}
+
+tasks.register('installToWorkspace', Sync) {
+	dependsOn(":buildForEngine")
 	from('engine')
 	into stencylWorkspace+"/engine-extensions/com.polydes.dialog"
-}
-
-tasks.register('installToolsetToWorkspace', Copy) {
-    from(tasks.named("jar"))
-	into stencylWorkspace+"/extensions"
-	rename { fileName -> "com.polydes.dialog.jar" }
-}
-
-tasks.register('installToWorkspace') {
-	dependsOn 'installToolsetToWorkspace'
-    dependsOn 'installEngineToWorkspace'
 }

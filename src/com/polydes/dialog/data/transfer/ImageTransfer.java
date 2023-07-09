@@ -2,10 +2,7 @@ package com.polydes.dialog.data.transfer;
 
 //http://sakoba.byethost13.com/2011/03/24/java-copy-and-past-image-clipboard/
 
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

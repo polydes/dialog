@@ -15,13 +15,13 @@ import org.apache.log4j.Logger;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.io.Text;
 
-import stencyl.core.engine.sound.ISoundClip;
 import stencyl.core.io.FileHelper;
-import stencyl.core.lib.Game;
+import stencyl.core.lib.IProject;
 import stencyl.core.lib.resource.Resource;
 import stencyl.core.util.Lang;
 import stencyl.core.util.ParsingHelper;
 import stencyl.core.util.Worker;
+import stencyl.sw.core.lib.sound.ISoundClip;
 
 public class V6_ExtensionSubmodules implements Worker
 {
@@ -38,7 +38,13 @@ public class V6_ExtensionSubmodules implements Worker
 	private int lastStructureID;
 	private File root;
 	private ArrayList<Structure> modifiedStructures;
-	
+	private IProject project;
+
+	public V6_ExtensionSubmodules(IProject project)
+	{
+		this.project = project;
+	}
+
 	@Override
 	public void doWork()
 	{
@@ -322,7 +328,7 @@ public class V6_ExtensionSubmodules implements Worker
 		String[] ids = s.split(",");
 		for(int i = 0; i < ids.length; ++i)
 		{
-			Resource r = Game.getGame().getResources().getResourceWithName(s);
+			Resource r = project.getResources().getResourceWithName(s);
 			if(r != null && ISoundClip.class.isAssignableFrom(r.getClass()))
 				ids[i] = String.valueOf(r.getID());
 			else

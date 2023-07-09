@@ -4,7 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
-import stencyl.toolset.comp.GradientPanel;
+import stencyl.app.comp.GradientPanel;
 
 public class StatusBar
 {

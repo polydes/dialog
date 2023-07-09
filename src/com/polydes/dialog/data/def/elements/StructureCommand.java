@@ -6,11 +6,10 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
-import com.polydes.common.io.XML;
 import com.polydes.datastruct.data.structure.SDE;
 import com.polydes.datastruct.data.structure.SDEType;
 import com.polydes.datastruct.data.structure.StructureDefinition;
-import com.polydes.datastruct.ui.objeditors.StructureObjectPanel;
+import com.polydes.datastruct.ui.objeditors.StructureDefinitionEditor;
 import com.polydes.datastruct.ui.table.Card;
 import com.polydes.datastruct.ui.table.GuiObject;
 import com.polydes.datastruct.ui.table.PropertiesSheet;
@@ -23,12 +22,10 @@ import stencyl.core.api.data.DataList;
 import stencyl.core.api.datatypes.DataContext;
 import stencyl.core.api.pnodes.DefaultBranch;
 import stencyl.core.api.pnodes.DefaultLeaf;
-import stencyl.core.datatypes.Types;
+import stencyl.core.io.XML;
+import stencyl.core.io.XmlHelper;
 import stencyl.core.util.ColorUtil;
 import stencyl.core.util.Lang;
-import stencyl.toolset.comp.datatypes.array.StandardArrayEditor;
-import stencyl.toolset.comp.datatypes.string.ExpandingStringEditor;
-import stencyl.toolset.comp.propsheet.PropertiesSheetStyle;
 
 public class StructureCommand extends SDE
 {
@@ -67,68 +64,6 @@ public class StructureCommand extends SDE
 		return arg.name+":"+arg.type.name();
 	}
 
-	public class StructureCommandPanel extends StructureObjectPanel
-	{
-		public StructureCommandPanel(final StructureCommand cmd, PropertiesSheetStyle style)
-		{
-			super(style, cmd);
-
-			sheet.build()
-
-				.field("name")._editor(Types._String).add()
-
-				.field("description")._editor(ExpandingStringEditor.BUILDER).add()
-
-				.header("Argument")
-
-				.field("args").label("")._editor(StandardArrayEditor.BUILDER).genType(DgTypes.sat).add()
-
-				.finish();
-
-			sheet.addPropertyChangeListener("name", event -> {
-				previewKey.setName(cmd.getDisplayLabel());
-				preview.lightRefreshLeaf(previewKey);
-			});
-
-			sheet.addPropertyChangeListener("description", event -> {
-				preview.lightRefreshLeaf(previewKey);
-			});
-
-			//XXX: PropertiesSheetSupport doesn't fire propertyChangeEvents for mutable
-			//objects that are updated in-place.
-			//
-			//sheet.addPropertyChangeListener("args", event -> {
-			sheet.getField("args").getEditor().addListener(() -> {
-				previewKey.setName(cmd.getDisplayLabel());
-				preview.lightRefreshLeaf(previewKey);
-			});
-		}
-	}
-
-	private StructureCommandPanel editor = null;
-
-	@Override
-	public JPanel getEditor()
-	{
-		if(editor == null)
-			editor = new StructureCommandPanel(this, PropertiesSheetStyle.LIGHT);
-
-		return editor;
-	}
-
-	@Override
-	public void disposeEditor()
-	{
-		editor.dispose();
-		editor = null;
-	}
-
-	@Override
-	public void revertChanges()
-	{
-		editor.revertChanges();
-	}
-
 	public static class CommandType extends SDEType<StructureCommand>
 	{
 		public CommandType()
@@ -149,7 +84,7 @@ public class StructureCommand extends SDE
 		private DataList/*<StructureArgument>*/ readArgs(Element e)
 		{
 			DataList/*<StructureArgument>*/ args = new DataList(DgTypes.sat.getRef());
-			XML.children(e).forEach((child) ->
+			XmlHelper.children(e).forEach((child) ->
 				args.add(new StructureArgument(XML.read(child, "name"), Type.valueOf(XML.read(child, "type"))))
 			);
 			return args;
@@ -172,7 +107,7 @@ public class StructureCommand extends SDE
 		}
 
 		@Override
-		public StructureCommand create(StructureDefinition def, String nodeName)
+		public StructureCommand create(StructureDefinition def, StructureDefinitionEditor defEditor, String nodeName)
 		{
 			return new StructureCommand(nodeName, new DataList(DgTypes.sat.getRef()), "");
 		}

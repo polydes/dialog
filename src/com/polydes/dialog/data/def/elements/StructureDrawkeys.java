@@ -1,12 +1,11 @@
 package com.polydes.dialog.data.def.elements;
 
-import javax.swing.*;
-
 import org.w3c.dom.Element;
 
 import com.polydes.datastruct.data.structure.SDE;
 import com.polydes.datastruct.data.structure.SDEType;
 import com.polydes.datastruct.data.structure.StructureDefinition;
+import com.polydes.datastruct.ui.objeditors.StructureDefinitionEditor;
 import com.polydes.datastruct.ui.table.GuiObject;
 import com.polydes.datastruct.ui.table.PropertiesSheet;
 
@@ -21,24 +20,6 @@ public class StructureDrawkeys extends SDE
 	public String getDisplayLabel()
 	{
 		return "Drawkeys";
-	}
-
-	@Override
-	public JPanel getEditor()
-	{
-		return new JPanel();
-	}
-
-	@Override
-	public void disposeEditor()
-	{
-		
-	}
-
-	@Override
-	public void revertChanges()
-	{
-		
 	}
 	
 	public static class DrawkeysType extends SDEType<StructureDrawkeys>
@@ -64,7 +45,7 @@ public class StructureDrawkeys extends SDE
 		}
 
 		@Override
-		public StructureDrawkeys create(StructureDefinition def, String nodeName)
+		public StructureDrawkeys create(StructureDefinition def, StructureDefinitionEditor defEditor, String nodeName)
 		{
 			return new StructureDrawkeys();
 		}

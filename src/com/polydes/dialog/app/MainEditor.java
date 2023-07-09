@@ -5,18 +5,18 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 
-import com.polydes.common.res.ResourceLoader;
-import com.polydes.common.res.Resources;
 import com.polydes.dialog.app.editors.text.TextArea;
 import com.polydes.dialog.app.pages.DialogPage;
 import com.polydes.dialog.app.pages.MacrosPage;
 import com.polydes.dialog.app.pages.PluginsPage;
 
-import stencyl.toolset.app.lnf.Theme;
+import stencyl.app.ext.res.AppResourceLoader;
+import stencyl.app.ext.res.AppResources;
+import stencyl.app.lnf.Theme;
 
 public class MainEditor extends JPanel
 {
-	private static Resources res = ResourceLoader.getResources("com.polydes.dialog");
+	private static AppResources res = AppResourceLoader.getResources("com.polydes.dialog");
 	
 	private static MainEditor _instance;
 	

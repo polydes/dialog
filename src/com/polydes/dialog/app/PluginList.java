@@ -11,40 +11,45 @@ import javax.swing.*;
 import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.data.structure.StructureDefinition;
 import com.polydes.datastruct.data.structure.StructureDefinitions;
-import com.polydes.datastruct.nodes.DefaultViewableBranch.DefaultViewableNodeUIProvider;
 import com.polydes.dialog.app.pages.PluginsPage;
 
+import stencyl.app.api.nodes.HierarchyModelInterface;
+import stencyl.app.api.nodes.NodeCreator;
+import stencyl.app.api.nodes.NodeCreator.CreatableNodeInfo;
+import stencyl.app.api.nodes.NodeCreator.NodeAction;
+import stencyl.app.api.nodes.NodeIconProvider;
+import stencyl.app.api.nodes.select.NodeSelection;
+import stencyl.app.comp.filelist.JListPopupAdapter;
+import stencyl.app.comp.filelist.LeafList.LeafRenderer;
+import stencyl.app.comp.filelist.LeafListSelectionModel;
+import stencyl.app.comp.util.PopupUtil;
 import stencyl.core.api.pnodes.DefaultBranch;
 import stencyl.core.api.pnodes.DefaultLeaf;
+import stencyl.core.api.pnodes.HierarchyRepresentation;
 import stencyl.core.api.pnodes.NodeUtils;
-import stencyl.toolset.api.nodes.HierarchyModel;
-import stencyl.toolset.api.nodes.HierarchyRepresentation;
-import stencyl.toolset.api.nodes.NodeCreator;
-import stencyl.toolset.api.nodes.NodeCreator.CreatableNodeInfo;
-import stencyl.toolset.api.nodes.NodeCreator.NodeAction;
-import stencyl.toolset.comp.filelist.JListPopupAdapter;
-import stencyl.toolset.comp.filelist.LeafList.LeafRenderer;
-import stencyl.toolset.comp.util.PopupUtil;
 
 import static stencyl.core.util.Lang.asArray;
 
 public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresentation<DefaultLeaf, DefaultBranch>
 {
-	HierarchyModel<DefaultLeaf,DefaultBranch> model;
+	HierarchyModelInterface<DefaultLeaf,DefaultBranch> modelInterface;
 	ArrayList<DefaultLeaf> defs;
 	
 	DefaultListModel<DefaultLeaf> listModel;
+	NodeSelection<DefaultLeaf,DefaultBranch> selection;
 	
-	public PluginList(HierarchyModel<DefaultLeaf,DefaultBranch> model)
+	public PluginList(HierarchyModelInterface<DefaultLeaf,DefaultBranch> modelInterface, NodeIconProvider<DefaultLeaf> nodeIconProvider)
 	{
 		super(new DefaultListModel<>());
 		listModel = (DefaultListModel<DefaultLeaf>) getModel();
+		selection = new NodeSelection<>(modelInterface.getModel());
 		
 		setBackground(null);
-		setCellRenderer(new LeafRenderer<DefaultLeaf,DefaultBranch>(60, 48, 24, 24, new DefaultViewableNodeUIProvider<>()));
+		setCellRenderer(new LeafRenderer<>(60, 48, 24, 24, nodeIconProvider));
 		setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		setVisibleRowCount(-1);
 		setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		setSelectionModel(new LeafListSelectionModel<>(modelInterface.getModel(), modelInterface.getModel().getRootBranch(), selection));
 		
 		setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 		
@@ -64,7 +69,7 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 					menuItems.add(PluginsPage.createNewPlugin.asMenuItem());
 				if(selectionTargeted)
 				{
-					ArrayList<NodeAction<DefaultLeaf>> actionItems = model.getNodeActions(targets);
+					ArrayList<NodeAction<DefaultLeaf>> actionItems = modelInterface.getNodeActions(targets);
 					menuItems.addAll(Arrays.asList(PopupUtil.asMenuItems(actionItems)));
 				}
 				
@@ -76,7 +81,7 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 						for(DefaultLeaf target : targets)
 							((NodeAction<DefaultLeaf>) item).callback.accept(target);
 					else if(item instanceof NodeCreator.CreatableNodeInfo)
-						model.createNewItem((CreatableNodeInfo) item);
+						modelInterface.createNewItem((CreatableNodeInfo) item, selection);
 					
 				});
 				
@@ -91,8 +96,8 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 			
 		});
 
-		this.model = model;
-		model.addRepresentation(this);
+		this.modelInterface = modelInterface;
+		modelInterface.getModel().addRepresentation(this);
 		defs = new ArrayList<>();
 		refresh();
 	}
@@ -113,7 +118,7 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 	
 	public void dispose()
 	{
-		model.removeRepresentation(this);
+		modelInterface.getModel().removeRepresentation(this);
 	}
 	
 	public void refresh()
@@ -124,7 +129,7 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 		StructureDefinitions sdefs = DataStructuresExtension.get().getStructureDefinitions();
 		StructureDefinition dialogExtensionSuperclass = sdefs.getItem("dialog.ds.DialogExtension");
 		
-		NodeUtils.recursiveRun(model.getRootBranch(), (DefaultLeaf leaf) -> {
+		NodeUtils.recursiveRun(modelInterface.getModel().getRootBranch(), (DefaultLeaf leaf) -> {
 			if(leaf.getUserData() instanceof StructureDefinition)
 			{
 				StructureDefinition def = (StructureDefinition) ((DefaultLeaf) leaf).getUserData();

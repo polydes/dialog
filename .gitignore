@@ -1,5 +1,6 @@
 /bin/
 /build/
+/engine/toolset-extension.jar
 /out/
 /release/
 /.settings/
