@@ -32,7 +32,7 @@ processResources {
     from('res') {
     	into 'res/com/polydes/dialog'
     }
-    from('icon.png') {
+    from(rootProject.file('icon.png')) {
         into 'com/polydes/dialog/res'
     }
 }

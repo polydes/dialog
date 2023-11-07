@@ -1,1 +1,4 @@
 rootProject.name = 'dialog'
+
+include('toolset')
+project(':toolset').name = 'dialog'
