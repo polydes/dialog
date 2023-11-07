@@ -20,8 +20,8 @@ public class Text
 {
 	private static final Logger log = Logger.getLogger(Text.class);
 	
-	private static HashMap<File, FileOutputStream> outstreams = new HashMap<File, FileOutputStream>();
-	private static HashMap<File, OutputStreamWriter> writers = new HashMap<File, OutputStreamWriter>();
+	private static HashMap<File, FileOutputStream> outstreams = new HashMap<>();
+	private static HashMap<File, OutputStreamWriter> writers = new HashMap<>();
 	
 	private static String convertFromPseudoUnicode(String text)
 	{
@@ -68,7 +68,7 @@ public class Text
 		catch (IOException e)
 		{
 			log.error(e.getMessage(), e);
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 	
@@ -93,7 +93,7 @@ public class Text
 		public TextFolder(String name)
 		{
 			super(name);
-			parts = new LinkedHashMap<String, Text.TextObject>();
+			parts = new LinkedHashMap<>();
 		}
 		
 		public void add(TextObject object)
@@ -109,7 +109,7 @@ public class Text
 		public TextSection(String name)
 		{
 			super(name);
-			parts = new ArrayList<String>();
+			parts = new ArrayList<>();
 		}
 		
 		public void add(String line)
@@ -124,7 +124,7 @@ public class Text
 		TextFolder toReturn = new TextFolder("root");
 		TextSection section = null;
 		
-		Stack<TextFolder> folderStack = new Stack<TextFolder>();
+		Stack<TextFolder> folderStack = new Stack<>();
 		folderStack.push(toReturn);
 		
 		for(String line : readLines(file))
@@ -153,7 +153,7 @@ public class Text
 	public static void writeSectionedText(File file, TextFolder folder, String sectionMark)
 	{
 		Text.sectionMark = sectionMark;
-		ArrayList<String> toWrite = new ArrayList<String>();
+		ArrayList<String> toWrite = new ArrayList<>();
 		for(TextObject o : folder.parts.values())
 			addSection(toWrite, o);
 		writeLines(file, toWrite);
@@ -161,11 +161,10 @@ public class Text
 	
 	public static void addSection(ArrayList<String> lines, TextObject object)
 	{
-		if(object instanceof TextFolder)
+		if(object instanceof TextFolder folder)
 		{
-			TextFolder folder = (TextFolder) object;
-			
-			lines.add(folderStartMark + folder.name);
+
+            lines.add(folderStartMark + folder.name);
 			for(String key : folder.parts.keySet())
 				addSection(lines, folder.parts.get(key));
 			lines.add(folderEndMark);

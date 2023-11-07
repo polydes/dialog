@@ -28,7 +28,7 @@ public class StructureArgumentEditor extends DataEditor<StructureArgument>
         nameEditor = new SingleLineStringEditor(new DataTypeProperties(), sheet, style);
         nameEditor.addListener(() -> updated());
 
-        typeEditor = new EnumEditor<Type>(Type.class);
+        typeEditor = new EnumEditor<>(Type.class);
         typeEditor.addListener(() -> updated());
 
         comps = ArrayUtils.addAll(nameEditor.getComponents(), typeEditor.getComponents());

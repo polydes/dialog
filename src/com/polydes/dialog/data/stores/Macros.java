@@ -19,7 +19,7 @@ public class Macros extends TextStore
 	private Macros()
 	{
 		super("Macros");
-		folderModel = new HierarchyModel<DefaultLeaf, DefaultBranch>(this, DefaultLeaf.class, DefaultBranch.class);
+		folderModel = new HierarchyModel<>(this, DefaultLeaf.class, DefaultBranch.class);
 	}
 	
 	public static Macros get()

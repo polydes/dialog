@@ -130,9 +130,8 @@ public class PluginList extends JList<DefaultLeaf> implements HierarchyRepresent
 		StructureDefinition dialogExtensionSuperclass = sdefs.getItem("dialog.ds.DialogExtension");
 		
 		NodeUtils.recursiveRun(modelInterface.getModel().getRootBranch(), (DefaultLeaf leaf) -> {
-			if(leaf.getUserData() instanceof StructureDefinition)
+			if(leaf.getUserData() instanceof StructureDefinition def)
 			{
-				StructureDefinition def = (StructureDefinition) ((DefaultLeaf) leaf).getUserData();
 				if(def.parent == dialogExtensionSuperclass)
 					defs.add(leaf);
 //				NodeUtils.recursiveRun(def.guiRoot, defElement -> {

@@ -156,14 +156,9 @@ public class TextArea extends TitledPanel implements PropertyChangeListener, Obj
 			{
 				final DocumentEvent e = arg0;
 				setDirty();
-				Runnable doUpdateStyle = new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						updateDocumentStyle(e.getOffset(), e.getLength());
-						updateHighlight(0, doc.getLength());
-					}
+				Runnable doUpdateStyle = () -> {
+					updateDocumentStyle(e.getOffset(), e.getLength());
+					updateHighlight(0, doc.getLength());
 				};
 				SwingUtilities.invokeLater(doUpdateStyle);
 			}
@@ -172,14 +167,7 @@ public class TextArea extends TitledPanel implements PropertyChangeListener, Obj
 			public void removeUpdate(DocumentEvent arg0)
 			{
 				setDirty();
-				Runnable doUpdateStyle = new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						updateHighlight(0, doc.getLength());
-					}
-				};
+				Runnable doUpdateStyle = () -> updateHighlight(0, doc.getLength());
 				SwingUtilities.invokeLater(doUpdateStyle);
 			}
 
@@ -233,8 +221,8 @@ public class TextArea extends TitledPanel implements PropertyChangeListener, Obj
 
 		try
 		{
-			lines = new ArrayList<String>(Arrays.asList(doc.getText(0,
-					doc.getLength()).split("\n")));
+			lines = new ArrayList<>(Arrays.asList(doc.getText(0,
+				doc.getLength()).split("\n")));
 		}
 		catch (BadLocationException e)
 		{

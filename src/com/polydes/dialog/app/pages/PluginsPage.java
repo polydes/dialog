@@ -61,7 +61,7 @@ public class PluginsPage extends JPanel
 	private PluginList dialogDefsList;
 	private PluginList userDefsList;
 	
-	public static NodeAction<DefaultLeaf> editPluginStructure = new NodeAction<DefaultLeaf>("Edit Structure", null, leaf -> {
+	public static NodeAction<DefaultLeaf> editPluginStructure = new NodeAction<>("Edit Structure", null, leaf -> {
 		SwingUtilities.invokeLater(() -> {
 			StructureDefinition selectDef = (StructureDefinition) leaf.getUserData();
 			StructureDefinitionPage.get().selectDefinition(selectDef);
@@ -69,24 +69,24 @@ public class PluginsPage extends JPanel
 		StructureDefinitionsWindow.get().setVisible(true);
 	});
 	
-	public static NodeAction<DefaultLeaf> editPluginCode = new NodeAction<DefaultLeaf>("Edit Code", null, leaf -> {
+	public static NodeAction<DefaultLeaf> editPluginCode = new NodeAction<>("Edit Code", null, leaf -> {
 		StructureDefinition def = (StructureDefinition) leaf.getUserData();
 		IProject project = DataStructuresExtension.get().getProject();
-		
+
 		NodeUtils.recursiveRun(def.guiRoot, (DefaultLeaf defLeaf) -> {
-			if(defLeaf.getUserData() instanceof StructureExtension)
+			if (defLeaf.getUserData() instanceof StructureExtension)
 			{
 				String implementingClass = ((StructureExtension) defLeaf.getUserData()).implementation;
 				Snippet toEdit = ((Game) project).getSnippetByClassname(implementingClass);
-				if(toEdit == null)
+				if (toEdit == null)
 					MessageDialog.showErrorDialog("No implementation", "Couldn't find behavior with classname \"" + implementingClass + "\".");
 				SWC.get(Workspace.class).openResource(toEdit, false);
 			}
 		});
 	});
 	
-	public static NodeAction<DefaultLeaf> duplicatePlugin = new NodeAction<DefaultLeaf>("Duplicate", null, leaf -> {
-		
+	public static NodeAction<DefaultLeaf> duplicatePlugin = new NodeAction<>("Duplicate", null, leaf -> {
+
 	});
 	
 	public static CreatableNodeInfo createNewPlugin = new CreatableNodeInfo("Create New Plugin", null, null);
@@ -114,15 +114,15 @@ public class PluginsPage extends JPanel
 			}
 		};
 
-		dialogDefsFmUi.setNodeCreator(new DefaultNodeCreator<DefaultLeaf, DefaultBranch>()
+		dialogDefsFmUi.setNodeCreator(new DefaultNodeCreator<>()
 		{
 			@Override
 			public ArrayList<NodeAction<DefaultLeaf>> getNodeActions(DefaultLeaf[] targets)
 			{
 				ArrayList<NodeAction<DefaultLeaf>> actions = new ArrayList<>();
-				if(targets.length == 1)
+				if (targets.length == 1)
 				{
-					if(targets[0].getUserData() instanceof StructureDefinition)
+					if (targets[0].getUserData() instanceof StructureDefinition)
 					{
 						actions.add(duplicatePlugin);
 					}
@@ -131,14 +131,14 @@ public class PluginsPage extends JPanel
 			}
 		});
 		
-		userDefsFmUi.setNodeCreator(new DefaultNodeCreator<DefaultLeaf, DefaultBranch>()
+		userDefsFmUi.setNodeCreator(new DefaultNodeCreator<>()
 		{
 			@Override
 			public void nodeRemoved(DefaultLeaf toRemove)
 			{
 				//TODO
 			}
-			
+
 			@Override
 			public DefaultLeaf createNode(CreatableNodeInfo selected, String nodeName, DefaultBranch newNodeFolder, int insertPosition)
 			{
@@ -148,46 +148,46 @@ public class PluginsPage extends JPanel
 				dg.setNodeName("New Plugin");
 				StructureDefinition toCreate = dg.newDef;
 				dg.dispose();
-				
-				if(toCreate == null)
+
+				if (toCreate == null)
 					return null;
-				
+
 				String newScriptTemplate = "";
 				try
 				{
 					newScriptTemplate = IOUtils.toString(res.getUrlStream("dialog-extension-template.hx"));
 				}
-				catch(IOException e)
+				catch (IOException e)
 				{
 					log.error(e.getMessage(), e);
 				}
-				
+
 				String newScriptName = toCreate.getName();
 				String newScriptClass = toCreate.getSimpleClassname();
 				String newScriptQualifiedClass = "scripts." + toCreate.getSimpleClassname();
-				
+
 				newScriptTemplate = newScriptTemplate.replaceAll("CLASSNAME", newScriptClass);
 				newScriptTemplate = newScriptTemplate.replaceAll("PACKAGE", "scripts");
 				newScriptTemplate = newScriptTemplate.replaceAll("NAME", "\"" + newScriptName + "\"");
-				
+
 				Snippets.createNew(project, newScriptName, "scripts", newScriptClass, "Implementation of Dialog plugin.", newScriptTemplate);
-				
+
 				StructureExtension newItem = new StructureExtension(newScriptQualifiedClass, "Description for " + newScriptName);
 				DefaultLeaf newLeaf = new DefaultLeaf(newItem.getDisplayLabel(), newItem);
 				newLeaf.setDirty(true);
 				toCreate.guiRoot.addItem(newLeaf);
-				
+
 				DataStructuresExtension.get().getStructureDefinitions().registerItem(toCreate);
 				return toCreate.dref;
 			}
-			
+
 			@Override
 			public ArrayList<NodeAction<DefaultLeaf>> getNodeActions(DefaultLeaf[] targets)
 			{
 				ArrayList<NodeAction<DefaultLeaf>> actions = new ArrayList<>();
-				if(targets.length == 1)
+				if (targets.length == 1)
 				{
-					if(targets[0].getUserData() instanceof StructureDefinition)
+					if (targets[0].getUserData() instanceof StructureDefinition)
 					{
 						actions.add(editPluginStructure);
 						actions.add(editPluginCode);
@@ -196,7 +196,7 @@ public class PluginsPage extends JPanel
 				}
 				return actions;
 			}
-			
+
 			@Override
 			public boolean attemptRemove(List<DefaultLeaf> toRemove)
 			{

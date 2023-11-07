@@ -162,7 +162,7 @@ public class V6_ExtensionSubmodules implements Worker
 					(
 						Lang.arraylist(logic,ms,ss,db,ts,eg,cs,sks,fs,te,dop),
 						Integer.class,
-						(struct) -> ParsingHelper.parseInt(((Structure) struct).get("struct_id"), -1)
+						(struct) -> ParsingHelper.parseInt(struct.get("struct_id"), -1)
 					),
 					","
 				);
