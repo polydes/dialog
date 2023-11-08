@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.swing.*;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
@@ -33,6 +35,7 @@ import com.polydes.dialog.updates.V5_GameExtensionUpdate;
 import com.polydes.dialog.updates.V6_ExtensionSubmodules;
 
 import stencyl.app.ext.PageAddon;
+import stencyl.app.ext.PageAddon.EngineExtensionPageAddon;
 import stencyl.core.api.datatypes.DataContext;
 import stencyl.core.api.fs.Locations;
 import stencyl.core.datatypes.Types;
@@ -67,7 +70,16 @@ public class DialogExtension extends GameExtension
 		
 		_instance = this;
 
-		owner().setAddon(GameLibrary.DASHBOARD_SIDEBAR_PAGE_ADDONS, (PageAddon) MainEditor::get);
+		PageAddon dialogSidebarPage = new EngineExtensionPageAddon(owner())
+		{
+			@Override
+			public JPanel getPage()
+			{
+				return MainEditor.get();
+			}
+		};
+
+		owner().getAddons().setAddon(GameLibrary.DASHBOARD_SIDEBAR_PAGE_ADDONS, dialogSidebarPage);
 		
 		sdeTypes = Lang.arraylist(
 			new ExtensionType(),
