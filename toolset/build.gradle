@@ -68,7 +68,7 @@ dependencies {
     if(localDev) {
 		compileOnly project(":ext-structures")
 	} else if(localBuild) {
-		compileOnly(files("../structures/engine/toolset-extension.jar"))
+		compileOnly(files("../../structures/engine/toolset-extension.jar"))
 		//compileOnly(files(stencylWorkspace+"/engine-extensions/com.polydes.datastruct/toolset-extension.jar"))
 	} else {
 		//TODO: grab structures jar from repository
@@ -95,17 +95,4 @@ jar {
 			"Extension-Internal-Version": "6"
 		)
 	}
-}
-
-tasks.register('buildForEngine', Copy) {
-	from(tasks.named("jar")) {
-		rename { fileName -> "toolset-extension.jar" }
-	}
-	into "engine"
-}
-
-tasks.register('installToWorkspace', Sync) {
-	dependsOn(":buildForEngine")
-	from('engine')
-	into stencylWorkspace+"/engine-extensions/com.polydes.dialog"
 }
