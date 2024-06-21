@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<stencyl-extension
+	id="com.polydes.dialog"
+	name="Dialog Extension"
+	description="The Dialog Extension"
+	website="http://dialogextension.com/"
+	compatibility="all"
+	repository="http://www.polydes.com/repo">
+
+	<model-format>1.0.0</model-format>
+
+	<version>2.0.8</version>
+
+	<compatibility>
+		<platform name=" b"
+	</compatibility>
+
+	<authors>
+		<author name="Justin Espedal" />
+		<author name="Cory Martin" />
+	</authors>
+
+	<dependencies>
+		<dependency type="haxelib" id="openfl" version="2.1.2" />
+		<dependency type="engine-extension" id="com.polydes.datastruct" version="2.1.2" />
+		<dependency type="stencyl-toolset" build="11582" />
+	</dependencies>
+
+	<readme path="README.md" />
+	<documation path="docs" />
+	<lime-library path="engine" />
+	<stencyl-blocks path="engine/blocks.xml" />
+	<icon path="engine/icon.png" />
+
+	<toolset-source path="toolset" />
+	<toolset-addons path="engine/stencyl-addons.xml" />
+
+</stencyl-extension>
