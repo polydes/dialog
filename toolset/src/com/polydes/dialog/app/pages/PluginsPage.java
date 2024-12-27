@@ -216,7 +216,10 @@ public class PluginsPage extends JPanel
 		
 		TitledPanel userDefsWrapper = new TitledPanel("Custom Plugins", null);
 		userDefsWrapper.add(userDefsList = new PluginList(userDefsFmUi, pluginNodeIconProvider), BorderLayout.CENTER);
-		
+
+		dialogDefsWrapper.setBackground(TextArea.TEXT_EDITOR_COLOR);
+		userDefsWrapper.setBackground(TextArea.TEXT_EDITOR_COLOR);
+
 		content.add(dialogDefsWrapper);
 		content.add(new HorizontalDivider(2));
 		content.add(userDefsWrapper);

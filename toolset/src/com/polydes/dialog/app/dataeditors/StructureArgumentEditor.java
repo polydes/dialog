@@ -11,7 +11,6 @@ import stencyl.app.api.datatypes.DataEditor;
 import stencyl.app.api.datatypes.EditorSheet;
 import stencyl.app.comp.datatypes.enumprim.EnumEditor;
 import stencyl.app.comp.datatypes.string.SingleLineStringEditor;
-import stencyl.app.comp.propsheet.PropertiesSheetStyle;
 import stencyl.core.api.datatypes.properties.DataTypeProperties;
 
 public class StructureArgumentEditor extends DataEditor<StructureArgument>
@@ -23,9 +22,9 @@ public class StructureArgumentEditor extends DataEditor<StructureArgument>
 
     final JComponent[] comps;
 
-    public StructureArgumentEditor(DataTypeProperties props, EditorSheet sheet, PropertiesSheetStyle style)
+    public StructureArgumentEditor(DataTypeProperties props, EditorSheet sheet)
     {
-        nameEditor = new SingleLineStringEditor(new DataTypeProperties(), sheet, style);
+        nameEditor = new SingleLineStringEditor(new DataTypeProperties(), sheet);
         nameEditor.addListener(() -> updated());
 
         typeEditor = new EnumEditor<>(Type.class);

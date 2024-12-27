@@ -19,7 +19,7 @@ public class DgTypes
     {
         Types.get().loadReference(sat);
         EditorProviders.editors.put(sat, Map.of(
-            UNSET_EDITOR, (EditorInitializer) (props, sheet, style) -> new StructureArgumentEditor(props, sheet, style)
+            UNSET_EDITOR, (EditorInitializer) (props, sheet) -> new StructureArgumentEditor(props, sheet)
         ));
     }
     
