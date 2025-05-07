@@ -10,9 +10,9 @@ import com.polydes.dialog.app.pages.DialogPage;
 import com.polydes.dialog.app.pages.MacrosPage;
 import com.polydes.dialog.app.pages.PluginsPage;
 
+import stencyl.app.comp.settings.SettingsSidebarButton;
 import stencyl.app.ext.res.AppResourceLoader;
 import stencyl.app.ext.res.AppResources;
-import stencyl.app.lnf.Theme;
 
 public class MainEditor extends JPanel
 {
@@ -92,46 +92,7 @@ public class MainEditor extends JPanel
 	
 	public JToggleButton createButton(String name, ImageIcon icon)
 	{
-		JToggleButton button = new JToggleButton()
-		{
-			@Override
-			public void paintComponent(Graphics g)
-			{
-				if(!isSelected())
-				{
-					super.paintComponent(g);
-					setForeground(Theme.TEXT_COLOR.darker());
-					return;
-				}
-				
-				g.setColor(new Color(0x666666));
-				setForeground(Theme.TEXT_COLOR);
-				g.fillRect(0, 0, getWidth(), getHeight());
-				super.paintComponent(g);
-			}
-		};
-		
-		button.setIconTextGap(8);
-		button.setContentAreaFilled(false);
-		button.setFocusPainted(false);
-		button.setBorder
-		(
-			BorderFactory.createCompoundBorder
-			(
-				BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0x454545)), 
-				BorderFactory.createMatteBorder(0, 0, 1, 0, new Color(0x333333))
-			)
-		);
-		
-		button.setHorizontalAlignment(SwingConstants.CENTER);
-		button.setVerticalAlignment(SwingConstants.CENTER);
-		button.setHorizontalTextPosition(SwingConstants.CENTER);
-		button.setVerticalTextPosition(SwingConstants.BOTTOM);
-		button.setForeground(Theme.TEXT_COLOR.darker());		
-		
-		button.setMinimumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-		button.setMaximumSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-		button.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+		JToggleButton button = new SettingsSidebarButton();
 		
 		button.setAction
 		(

@@ -79,9 +79,9 @@ public class StructureExtension extends SDE
 			card.setLineBorder("Dialog Extension Info");
 			
 			RowGroup descGroup = new RowGroup(null);
-			descGroup.add(sheet.style.hintgap);
+			descGroup.add(sheet.style.layout().hintgap());
 			descGroup.add(sheet.style.createLabel("Description"), sheet.style.createDescriptionRow(value.description));
-			descGroup.add(sheet.style.rowgap);
+			descGroup.add(sheet.style.layout().rowgap());
 			card.addGroup(0, descGroup);
 			
 			if(!sheet.isChangingLayout)

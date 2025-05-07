@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.swing.*;
 
 import com.polydes.datastruct.ui.UIConsts;
-import com.polydes.dialog.app.MiniSplitPane;
 import com.polydes.dialog.app.editors.text.Highlighter;
 import com.polydes.dialog.app.editors.text.TextArea;
 import com.polydes.dialog.data.TextSource;
@@ -18,6 +17,7 @@ import stencyl.app.api.nodes.HierarchyModelInterface;
 import stencyl.app.api.nodes.NodeCreator;
 import stencyl.app.api.nodes.NodeIconProvider;
 import stencyl.app.api.nodes.NodeViewProvider;
+import stencyl.app.comp.MiniSplitPane;
 import stencyl.app.comp.darktree.DarkTree;
 import stencyl.app.comp.filelist.TreePage;
 import stencyl.core.api.pnodes.DefaultBranch;

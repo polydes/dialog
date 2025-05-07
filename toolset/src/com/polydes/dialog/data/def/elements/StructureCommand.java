@@ -120,7 +120,7 @@ public class StructureCommand extends SDE
 
 			RowGroup group = new RowGroup(value);
 			group.add(i == 0 ? sheet.style.createLabel("Commands") : null, sheet.style.createDescriptionRow(value.getFullHtmlDisplayLabel()));
-			group.add(sheet.style.hintgap);
+			group.add(sheet.style.layout().hintgap());
 
 			parentCard.addGroup(i + 1, group);
 

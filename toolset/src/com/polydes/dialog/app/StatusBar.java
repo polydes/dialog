@@ -4,6 +4,7 @@ import java.awt.*;
 
 import javax.swing.*;
 
+import stencyl.app.comp.FlatPaintPanel;
 import stencyl.app.comp.GradientPanel;
 
 public class StatusBar
@@ -19,7 +20,7 @@ public class StatusBar
 
 	public static JPanel createStatusBar()
 	{
-		JPanel bar = new GradientPanel("", START_COLOR, END_COLOR, TEXT_COLOR, HEIGHT);
+		JPanel bar = new GradientPanel("", FlatPaintPanel.STATUS_BAR, TEXT_COLOR, HEIGHT);
 		
 		bar.removeAll();
 		bar.setBorder(BorderFactory.createMatteBorder(1, 0,	0, 0, new Color(0x2d2d2d)));
