@@ -4,8 +4,8 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 tasks.withType(JavaCompile).each {
@@ -43,10 +43,10 @@ repositories {
 	}
 	mavenCentral()
 	maven {
-		url "https://www.stencyl.com/dl/maven2/releases"
+		url = "https://www.stencyl.com/dl/maven2/releases"
 	}
 	maven {
-		url "https://www.stencyl.com/dl/maven2/snapshots"
+		url = "https://www.stencyl.com/dl/maven2/snapshots"
 	}
 }
 
@@ -58,13 +58,13 @@ dependencies {
 		compileOnly project(":stencyl-v5-core")
 		compileOnly project(":stencyl-v5-toolset")
 	} else {
-		compileOnly group: 'com.stencyl', name: 'stencyl', version: '4.1.0-SNAPSHOT'
+		compileOnly 'com.stencyl:stencyl:4.1.0-SNAPSHOT'
 	}
-	compileOnly group: 'com.stencyl',        name: 'jide-oss'
-	compileOnly group: 'com.stencyl',        name: 'jide-components'
-    compileOnly group: 'org.apache.commons', name: 'commons-lang3'
-	compileOnly group: 'ch.qos.reload4j',    name: 'reload4j'
-    compileOnly group: 'commons-io',         name: 'commons-io'
+	compileOnly 'com.stencyl:jide-oss'
+	compileOnly 'com.stencyl:jide-components'
+    compileOnly 'org.apache.commons:commons-lang3'
+	compileOnly 'ch.qos.reload4j:reload4j'
+    compileOnly 'commons-io:commons-io'
     if(localDev) {
 		compileOnly project(":ext-structures")
 	} else if(localBuild) {
