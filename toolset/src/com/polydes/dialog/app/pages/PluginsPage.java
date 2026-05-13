@@ -97,7 +97,7 @@ public class PluginsPage extends JPanel
 		
 		Folder root = DataStructuresExtension.get().getStructureDefinitions().root;
 		
-		DefaultBranch dialogDefsRoot = (DefaultBranch) root.getItemByName(DialogExtension.get().getManifest().name);
+		DefaultBranch dialogDefsRoot = (DefaultBranch) root.getItemByName(DialogExtension.get().getInfo().getName());
 		DefaultBranch userDefsRoot = (DefaultBranch) root.getItemByName("My Structures");
 		
 		dialogDefsFM = new HierarchyModel<>(dialogDefsRoot, DefaultLeaf.class, DefaultBranch.class);

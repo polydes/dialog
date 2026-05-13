@@ -1,0 +1,38 @@
+{
+  "group": "com.polydes",
+  "id": "com.polydes.dialog",
+  "name": "Dialog Extension",
+  "description": "The Dialog Extension",
+  "type": "game",
+  "author": "Justin & Irock",
+  "website": "https://dialogextension.com/",
+  "repository": "https://www.polydes.com/repo",
+  "target": "stencyl-4.2.0",
+  "version": "2.1.0",
+  "dependencies": "engine-com.polydes.datastruct-2.2.0",
+
+  "icon": "icon.png",
+
+  "toolset": {
+    "root": "toolset",
+    "src": [
+      {"type": "java", "path": "src"},
+      {"type": "res", "path": "res", "target": "res/com/polydes/dialog"}
+    ],
+    "dependencies": [
+      "platform:com.stencyl:jide-oss",
+      "platform:com.stencyl:jide-components",
+      "platform:org.apache.commons:commons-lang3",
+      "platform:ch.qos.reload4j:reload4j",
+      "platform:commons-io:commons-io",
+      "extension:com.polydes.datastruct"
+    ],
+    "mainClass": "com.polydes.dialog.DialogExtension",
+    "internalVersion": "6"
+  },
+
+  "engine": {
+    "root": "engine",
+    "compatibility": "all"
+  }
+}

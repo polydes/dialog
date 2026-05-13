@@ -97,7 +97,7 @@ public class DialogExtension extends GameExtension
 			DataStructuresExtension dse = DataStructuresExtension.get();
 
 			for(SDEType<?> sdet : sdeTypes)
-				dse.getSdeTypes().registerItem(getManifest().id, sdet);
+				dse.getSdeTypes().registerItem(getInfo().getID(), sdet);
 			SDETypes.fromClass(StructureTab.class).childTypes.add(StructureExtension.class);
 			DgTypes.registerTypes();
 
@@ -108,7 +108,7 @@ public class DialogExtension extends GameExtension
 				dse.getHaxeTypes().registerItem(type);
 
 			File defLoc = new File(Locations.getGameExtensionLocation("com.polydes.dialog"), "def");
-			dse.getStructureDefinitions().addFolder(defLoc, getManifest().name);
+			dse.getStructureDefinitions().addFolder(defLoc, getInfo().getName());
 		});
 	}
 	

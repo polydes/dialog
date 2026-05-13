@@ -1,4 +1,8 @@
-/.gradle/
 /build/
-/engine/toolset-extension.jar
-/release/
+/bin/
+/out/
+/.idea/
+/.gradle/
+/.settings/
+/.classpath
+/.project
