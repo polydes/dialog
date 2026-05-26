@@ -2,8 +2,6 @@ package com.polydes.dialog.updates;
 
 import java.io.File;
 
-import com.polydes.dialog.DialogExtension;
-
 import stencyl.core.io.FileHelper;
 import stencyl.core.lib.IProject;
 import stencyl.core.util.Worker;
@@ -20,11 +18,10 @@ public class V5_GameExtensionUpdate implements Worker
 	@Override
 	public void doWork()
 	{
-		DialogExtension dg = DialogExtension.get();
-		
 		File oldExtrasFolder = project.getFile("extras", "[ext] dialog");
-		
-		FileHelper.copyDirectory(oldExtrasFolder, dg.getExtrasFolder());
+		File newExtrasFolder = new File(project.getFiles().getExtensionExtrasDataLocation("com.polydes.dialog"));
+
+		FileHelper.copyDirectory(oldExtrasFolder, newExtrasFolder);
 		FileHelper.delete(oldExtrasFolder);
 	}
 }

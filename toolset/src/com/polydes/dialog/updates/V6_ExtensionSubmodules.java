@@ -12,7 +12,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.polydes.datastruct.DataStructuresExtension;
 import com.polydes.datastruct.io.Text;
 
 import stencyl.core.io.FileHelper;
@@ -48,10 +47,10 @@ public class V6_ExtensionSubmodules implements Worker
 	@Override
 	public void doWork()
 	{
-		DataStructuresExtension dse = DataStructuresExtension.get();
+		File extrasFolder = new File(project.getFiles().getExtensionExtrasDataLocation("com.polydes.datastruct"));
 		
 		lastStructureID = -1;
-		root = new File(dse.getExtrasFolder(), "data");
+		root = new File(extrasFolder, "data");
 		for(File f : FileHelper.listFiles(root))
 		{
 			if(f.getName().endsWith(".txt"))
