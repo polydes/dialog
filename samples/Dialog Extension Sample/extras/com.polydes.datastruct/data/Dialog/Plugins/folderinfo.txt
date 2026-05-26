@@ -1,0 +1,1 @@
+fileOrder=Default Style Character Scripts,Default Style Flow Scripts,Default Style Typing Scripts,Default Style Dialog Options,Messaging Scripts,Default Style Skip Scripts,Default Style Extra Glyphs,Default Style Dialog Base,Sound Scripts,Default Style Text Effects,Logic

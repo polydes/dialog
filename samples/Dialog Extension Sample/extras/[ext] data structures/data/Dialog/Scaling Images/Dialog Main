@@ -1,7 +1,0 @@
-struct_id=0
-struct_type=ScalingImage
-image=Dialog Main Window
-origin=[0,0]
-type=Stretch Image
-part=Whole Image
-border=[0,0]

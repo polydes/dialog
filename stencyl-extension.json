@@ -3,6 +3,7 @@
   "id": "com.polydes.dialog",
   "name": "Dialog Extension",
   "description": "The Dialog Extension",
+  "tags": ["ui"],
   "type": "game",
   "author": "Justin & Irock",
   "website": "https://dialogextension.com/",

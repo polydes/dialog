@@ -1,0 +1,12 @@
+struct_id=19
+struct_type=dialog.ds.ext.SkipScripts
+fastSpeed=0.01
+zoomSoundInterval=160
+skippableDefault=true
+zoomSound=[]:com.stencyl.models.Sound
+fastSoundInterval=0
+zoomButton=x
+fastSound=[]:com.stencyl.models.Sound
+fastButton=z
+instantButton=c
+zoomSpeed=0.0040

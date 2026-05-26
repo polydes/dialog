@@ -1,0 +1,7 @@
+struct_id=0
+struct_type=dialog.ds.ScalingImageTemplate
+border=[0,0,0,0]
+image=Dialog Main Window.png
+part=Whole Image
+origin=[[0],[0]]
+type=Stretch Image

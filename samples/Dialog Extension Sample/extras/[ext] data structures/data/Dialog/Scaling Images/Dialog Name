@@ -1,7 +1,0 @@
-struct_id=1
-struct_type=ScalingImage
-image=Dialog Name Window
-origin=[0,100%]
-type=Stretch Image
-part=Inside Border
-border=[4,4]

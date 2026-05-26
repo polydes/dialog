@@ -1,0 +1,15 @@
+struct_id=22
+struct_type=dialog.ds.ext.DialogOptions
+appearSound=19
+cursorWindow=10
+windowFont=32
+itemPadding=4
+choiceLayout=Vertical
+cursorType=Use Window
+changeSound=8
+scrollDuration=90
+inactiveTime=350
+windowTemplate=9
+scrollWait=350
+confirmSound=9
+selectButton=v
