@@ -3,7 +3,7 @@
   [
     {
       "version": "2.1.0",
-      "dependencies": "stencyl-4.2.0"
+      "dependencies": "stencyl-4.2.0,engine-com.polydes.datastruct-2.2.0"
     }
   ]
 }
